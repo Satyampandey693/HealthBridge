@@ -1,0 +1,32 @@
+/* Ensure the header takes up full width */
+.navbar {
+  width: 100%;
+  background-color: #333; /* Or any background you prefer */
+  padding: 20px 40px; /* Adjust padding as necessary */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative; /* Keeps the header at the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Keeps it on top of other content */
+}
+
+.navbar-left, .navbar-right {
+  display: flex;
+  gap: 20px; /* Adjust spacing between links */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+}
+
+.navbar a.active {
+  color: #f39c12; /* Active link color */
+}
+
+.navbar a:hover {
+  color: #f39c12; /* Hover color */
+}

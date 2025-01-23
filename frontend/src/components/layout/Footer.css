@@ -1,0 +1,31 @@
+/* Ensure that body and html take full width and remove default margin/padding */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;  /* Ensure the body takes full height */
+  }
+  
+  .footer {
+    background-color: #282c34;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    width: 100%; /* Ensure full width */
+    position: relative; /* Ensure it's inside the flow of the page */
+    bottom: 0;  /* Pin it to the bottom */
+  }
+  
+  .footer-content {
+    font-size: 14px;
+  }
+  
+  .website-name {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .copyright {
+    margin-top: 5px;
+  }
+  

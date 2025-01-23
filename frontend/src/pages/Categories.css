@@ -1,0 +1,52 @@
+/* Categories.css */
+
+/* Container for cards */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  /*background: url('../photos/doctor-bg.jpg') no-repeat center;*/
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.cards-container {
+    display: flex;                 /* Use flexbox to arrange the cards */
+    flex-wrap: wrap;               /* Allow cards to wrap to the next line */
+    gap: 15px;                     /* Space between cards */
+    padding: 20px;                 /* Padding around the cards container */
+    box-sizing: border-box;        /* Prevent padding from affecting the width */
+  }
+  
+  /* Card wrapper to control layout */
+  .cards-container span {
+    width: calc(25% - 15px);        /* Each card takes up 25% of the container's width for 4 cards in a row */
+    margin-bottom: 30px;            /* Adds more space between rows of cards */
+    display: flex;
+    justify-content: center;        /* Center the card inside the wrapper */
+    box-sizing: border-box;
+  }
+  
+  /* Responsive adjustments for smaller screen sizes */
+  @media (max-width: 1200px) {
+    .cards-container span {
+      width: calc(33.333% - 15px);   /* On medium screens (like laptops), cards take up 33.33% width, so 3 cards per row */
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .cards-container span {
+      width: calc(50% - 15px);   /* On tablets, cards take up 50% of the container's width */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .cards-container span {
+      width: 100%;               /* On mobile devices, cards take up 100% of the width */
+    }
+  }
+  

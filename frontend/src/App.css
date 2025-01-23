@@ -1,0 +1,38 @@
+/* Flexbox layout for full-page */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;  /* Full height for the page */
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;  /* Ensure full height */
+}
+
+.main-content {
+  flex-grow: 1;  /* Push footer to the bottom */
+}
+
+.footer {
+  background-color: #282c34;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-content {
+  font-size: 14px;
+}
+
+.website-name {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.copyright {
+  margin-top: 5px;
+}
