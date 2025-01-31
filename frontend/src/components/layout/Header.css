@@ -1,32 +1,115 @@
-/* Ensure the header takes up full width */
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Full-width Navbar with Dark Grey */
 .navbar {
   width: 100%;
-  background-color: #333; /* Or any background you prefer */
-  padding: 20px 40px; /* Adjust padding as necessary */
+  height: 100px;  /* Increased from 80px to 100px */
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  position: relative; /* Keeps the header at the top */
+  justify-content: space-between;
+  background: linear-gradient(90deg, #333, #1e1e1e); /* Dark grey gradient */
+  padding: 0 60px;  /* A bit more padding for presence */
+  color: white;
+  position: relative;
   top: 0;
   left: 0;
-  z-index: 1000; /* Keeps it on top of other content */
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.navbar-left, .navbar-right {
+/* Left Section: Logo + Navigation Links */
+.left-section {
   display: flex;
-  gap: 20px; /* Adjust spacing between links */
+  align-items: center;
 }
 
-.navbar a {
+/* Logo Styling */
+.logo a {
+  font-size: 2em;
+  font-weight: bold;
   text-decoration: none;
   color: white;
-  font-size: 16px;
+  margin-right: 40px;
+  letter-spacing: 1px;
+  transition: transform 0.3s ease-in-out;
 }
 
-.navbar a.active {
-  color: #f39c12; /* Active link color */
+.logo a:hover {
+  transform: scale(1.1);
+  color: #ffcc00; /* Yellow hover effect */
 }
 
-.navbar a:hover {
-  color: #f39c12; /* Hover color */
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.nav-links li {
+  margin-right: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Underline hover effect */
+.nav-links a::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 3px;
+  background: #ffcc00; /* Yellow underline */
+  transition: width 0.3s ease-in-out;
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-links a:hover {
+  color: #ffcc00;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Right Section: My Profile */
+.right-section {
+  font-size: 18px;
+}
+
+/* My Profile Button */
+.profile-btn {
+  padding: 8px 15px;
+  border-radius: 25px;
+  background: white;
+  color: #333;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid white;
+}
+
+.profile-btn:hover {
+  background: #ffcc00;
+  color: #1e1e1e;
+  border-color: #ffcc00;
+  transform: scale(1.1);
+}
+
+/* Ensure content below the navbar doesn't get hidden */
+body {
+  margin-top: 70px;
 }

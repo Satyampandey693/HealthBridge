@@ -1,31 +1,32 @@
-/* Ensure that body and html take full width and remove default margin/padding */
+/* Footer Styling */
+.footer {
+  background-color: #1e1e1e; /* Dark grey */
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  width: 100%;
+  position: relative; /* Make it part of normal document flow */
+  bottom: 0;
+  left: 0;
+}
+
+/* Ensure full page layout */
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;  /* Ensure the body takes full height */
-  }
-  
-  .footer {
-    background-color: #282c34;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    width: 100%; /* Ensure full width */
-    position: relative; /* Ensure it's inside the flow of the page */
-    bottom: 0;  /* Pin it to the bottom */
-  }
-  
-  .footer-content {
-    font-size: 14px;
-  }
-  
-  .website-name {
-    font-weight: bold;
-    font-size: 18px;
-  }
-  
-  .copyright {
-    margin-top: 5px;
-  }
-  
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main wrapper to manage layout */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure full height */
+}
+
+/* Push footer down when content is short */
+.main-content {
+  flex: 1;
+}

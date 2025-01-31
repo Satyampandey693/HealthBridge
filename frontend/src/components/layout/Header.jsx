@@ -1,29 +1,25 @@
+
+import { Link } from "react-router-dom";
 import "./Header.css";
-import { NavLink } from "react-router-dom";
 
 export const Header = () => {
-  return (
-    <div className="navbar">
-      <div className="navbar-left">
-        <NavLink to="/doctors" className={({ isActive }) => isActive ? "active" : ""}>
-          Doctors
-        </NavLink>
-        <NavLink to="/medicines" className={({ isActive }) => isActive ? "active" : ""}>
-          Medicines
-        </NavLink>
-        <NavLink to="/labtests" className={({ isActive }) => isActive ? "active" : ""}>
-          Lab Tests
-        </NavLink>
-        <NavLink to="/reports" className={({ isActive }) => isActive ? "active" : ""}>
-          Reports
-        </NavLink>
-      </div>
-      
-      <div className="navbar-right">
-        <NavLink to="/profile" className={({ isActive }) => isActive ? "active" : ""}>
-          My Profile
-        </NavLink>
-      </div>
-    </div>
-  );
+    return (
+        <nav className="navbar">
+            <div className="left-section">
+                <div className="logo">
+                    <Link to="/">HealthBridge</Link>
+                </div>
+                <ul className="nav-links">
+                    <li><Link to="/doctors">Doctors</Link></li>
+                    <li><Link to="/medicines">Medicines</Link></li>
+                    <li><Link to="/lab-tests">Lab Tests</Link></li>
+                    <li><Link to="/reports">Reports</Link></li>
+                </ul>
+            </div>
+
+            <div className="right-section">
+                <Link to="/profile" className="profile-btn">My Profile</Link>
+            </div>
+        </nav>
+    );
 };
