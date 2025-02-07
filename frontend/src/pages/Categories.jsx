@@ -1,11 +1,12 @@
 import Card from "../components/layout/UI/Card";
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "./Categories.css";
 
 export const Categories = () => {
   const [cards, setCards] = useState([]);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     axios
@@ -16,14 +17,19 @@ export const Categories = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []); // This makes the API call only once when the component mounts
+  }, []);
+
+  const handleCardClick = (card) => {
+    console.log("Clicked Card:", card); 
+    navigate(`/${card.title}`); 
+  };
 
   return (
     <>
       <h1>Categories</h1>
       <div className="cards-container">
         {cards.map((card, index) => (
-          <span key={index}>
+          <span key={index} className="clickable-card" onClick={() => handleCardClick(card)}>
             <Card 
               photoUrl={card.photoUrl} 
               title={card.title} 

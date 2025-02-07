@@ -1,0 +1,80 @@
+/* Reset and full height setup */
+
+/* Root and app layout */
+#root, .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures the page takes full height */
+}
+
+/* Ensure header stays at the top */
+/* .header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+} */
+
+/* Ensure footer stays at the bottom */
+
+/* Main content area (between header and footer) */
+.page-content {
+    flex-grow: 1; /* Pushes footer down */
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    padding: 80px 20px; /* Ensures gap from header and footer */
+    margin-top: 80px; /* Adds gap from header */
+    margin-bottom: 80px; /* Adds gap from footer */
+}
+
+/* Login Container */
+.login-container {
+    max-width: 400px;
+    width: 90%;
+    padding: 35px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+/* Form Styling */
+.login-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input Fields */
+.login-container input {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.login-container input:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Submit Button */
+.login-container button {
+    background: #007bff;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s ease-in-out;
+}
+
+.login-container button:hover {
+    background: #0056b3;
+}

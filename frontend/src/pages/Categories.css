@@ -49,4 +49,11 @@ body {
       width: 100%;               /* On mobile devices, cards take up 100% of the width */
     }
   }
+  .clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
   
+  .clickable-card:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+  }

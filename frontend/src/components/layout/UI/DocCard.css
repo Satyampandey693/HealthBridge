@@ -1,58 +1,71 @@
-/* Basic card styling */
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow-y: auto;
-    height: auto;
-    box-sizing: border-box;
+/* Doctor Card Container */
+.doctor-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Doctor Image */
+.doctor-card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Card Content */
+.doctor-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Title */
+.doctor-card-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 6px 0;
+  color: #333;
+}
+
+/* Info Text */
+.doctor-card-info {
+  font-size: 1rem;
+  color: #555;
+  margin: 4px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .doctor-card {
+    max-width: 90%;
+    padding: 12px;
   }
-  
-  .card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Ensure content doesn't spill out */
-    width: 100%; /* Ensure card occupies full width available inside its container */
-    display: flex;
-    flex-direction: column; /* Align content vertically */
-    align-items: center;
-    justify-content: space-between;
-    height: auto; /* Allow height to adjust based on content */
-    padding: 10px; /* Reduced padding slightly further */
-    box-sizing: border-box;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  .doctor-card-image {
+    height: 160px;
   }
-  
-  .card:hover {
-    transform: translateY(-5px); /* Lift card effect on hover */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+
+  .doctor-card-title {
+    font-size: 1.1rem;
   }
-  
-  .card-image {
-    width: 100%;
-    height: 150px; /* Further reduced height of the image */
-    object-fit: cover; /* Ensures image covers the area without distortion */
-    border-radius: 8px;
+
+  .doctor-card-info {
+    font-size: 0.9rem;
   }
-  
-  .card-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 6px; /* Further reduced padding to make the card shorter */
-    text-align: center;
-  }
-  
-  .card-title {
-    font-size: 1.15rem; /* Slightly reduced font size */
-    font-weight: 600;
-    margin: 5px 0; /* Further reduced margin to shorten card */
-  }
-  
-  .card-description {
-    font-size: 0.9rem; /* Slightly reduced font size */
-    color: #555;
-    margin: 3px 0; /* Further reduced margin for description */
-  }
-  
+}

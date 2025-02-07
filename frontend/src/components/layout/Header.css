@@ -1,19 +1,19 @@
-/* Reset styles */
+/* Reset Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Full-width Navbar with Dark Grey */
+/* Navbar Styling */
 .navbar {
   width: 100%;
-  height: 100px;  /* Increased from 80px to 100px */
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #333, #1e1e1e); /* Dark grey gradient */
-  padding: 0 60px;  /* A bit more padding for presence */
+  background: linear-gradient(90deg, #333, #1e1e1e);
+  padding: 0 50px;
   color: white;
   position: relative;
   top: 0;
@@ -30,18 +30,17 @@
 
 /* Logo Styling */
 .logo a {
-  font-size: 2em;
+  font-size: 24px;
   font-weight: bold;
   text-decoration: none;
   color: white;
   margin-right: 40px;
-  letter-spacing: 1px;
   transition: transform 0.3s ease-in-out;
 }
 
 .logo a:hover {
   transform: scale(1.1);
-  color: #ffcc00; /* Yellow hover effect */
+  color: #ffcc00;
 }
 
 /* Navigation Links */
@@ -51,7 +50,7 @@
 }
 
 .nav-links li {
-  margin-right: 25px;
+  margin-right: 20px;
 }
 
 .nav-links a {
@@ -69,7 +68,7 @@
   display: block;
   width: 0;
   height: 3px;
-  background: #ffcc00; /* Yellow underline */
+  background: #ffcc00;
   transition: width 0.3s ease-in-out;
   position: absolute;
   bottom: -5px;
@@ -85,31 +84,4 @@
   width: 100%;
 }
 
-/* Right Section: My Profile */
-.right-section {
-  font-size: 18px;
-}
-
-/* My Profile Button */
-.profile-btn {
-  padding: 8px 15px;
-  border-radius: 25px;
-  background: white;
-  color: #333;
-  font-weight: bold;
-  text-decoration: none;
-  transition: all 0.3s ease-in-out;
-  border: 2px solid white;
-}
-
-.profile-btn:hover {
-  background: #ffcc00;
-  color: #1e1e1e;
-  border-color: #ffcc00;
-  transform: scale(1.1);
-}
-
-/* Ensure content below the navbar doesn't get hidden */
-body {
-  margin-top: 70px;
-}
+/* Right Section: Login & Sign Up Buttons */

@@ -2,22 +2,30 @@ import express from "express"
 import { fileURLToPath } from 'url';
 import path from "path"
 import dotenv from "dotenv";
+import { connectDatabase } from "./config/dbConnect.js";
+import doctorRoutes from "./src/routes/doctorRoutes.js"
+import doctors from "./src/routes/Doctors.js";
+//import { cardsData } from "./src/constants.js";
 dotenv.config({ path: "./config/config.env" });
 const app = express()
 const port = process.env.PORT||3000
-
+connectDatabase();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+app.use('/api/doctor',doctorRoutes);
+app.use('/api/doctors',doctors);
 
 app.get('/api/cards',(req,res)=>{
-  const cardsData=[
+   const cardsData=[
     {
       id:1,
       photoUrl:"http://localhost:3000/photos/onco.jpg",
