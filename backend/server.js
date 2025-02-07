@@ -2,9 +2,12 @@ import express from "express"
 import { fileURLToPath } from 'url';
 import path from "path"
 import dotenv from "dotenv";
+
+import cookieParser from "cookie-parser";
+import errorMiddleware from "./src/middlewares/errors.js";
+
 import { connectDatabase } from "./config/dbConnect.js";
-import doctorRoutes from "./src/routes/doctorRoutes.js"
-import doctors from "./src/routes/Doctors.js";
+
 //import { cardsData } from "./src/constants.js";
 dotenv.config({ path: "./config/config.env" });
 const app = express()
@@ -14,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
-app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
 
 
@@ -158,6 +161,39 @@ app.get('/api/cards',(req,res)=>{
   res.send(cardsData);
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${process.env.PORT}`)
+app.use(express.json());
+app.use(cookieParser());
+
+app.use(express.urlencoded({ extended: true }));
+
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
 })
+
+// Import all routes
+import userAuthRoutes from "./src/routes/userAuth.js"
+import doctorRoutes from "./src/routes/doctorRoutes.js"
+import doctors from "./src/routes/Doctors.js";
+// console.log("sdfgh");
+app.use("/api",userAuthRoutes);
+
+app.use('/api/doctor',doctorRoutes);
+app.use('/api/doctors',doctors);
+// Using error middleware
+app.use(errorMiddleware);
+
+const server = app.listen(process.env.PORT, () => {
+  console.log(
+    `Server started on PORT: ${process.env.PORT} in ${process.env.NODE_ENV} mode.`
+  );
+});
+
+//Handle Unhandled Promise rejections
+process.on("unhandledRejection", (err) => {
+  console.log(`ERROR: ${err}`);
+  console.log("Shutting down server due to Unhandled Promise Rejection");
+  server.close(() => {
+    process.exit(1);
+  });
+});

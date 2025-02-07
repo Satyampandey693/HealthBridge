@@ -1,0 +1,74 @@
+
+.userRegister-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, #10b981, #14b8a6);
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  
+  .userRegister-box {
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .userRegister-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 24px;
+  }
+  
+  .userRegister-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .userRegister-input-field {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+  }
+  
+  .userRegister-button {
+    padding: 12px;
+    background: #059669;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .userRegister-button:hover {
+    background: #047857;
+  }
+  
+  .userRegister-footer {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .userRegister-link {
+    color: #059669;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .userRegister-link:hover {
+    text-decoration: underline;
+  }
+  

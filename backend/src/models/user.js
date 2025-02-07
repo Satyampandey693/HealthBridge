@@ -3,35 +3,48 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
+
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please enter your name"],
-      maxLength: [50, "Your name cannot exceed 50 characters"],
+      required: [true, 'Please enter your name'],
+      trim: true,
     },
     email: {
       type: String,
-      required: [true, "Please enter your email"],
+      required: [true, 'Please enter your email'],
       unique: true,
+      lowercase: true,
     },
     password: {
       type: String,
-      required: [true, "Please enter your password"],
-      minLength: [6, "Your password must be longer than 6 characters"],
-      select: false,
+      required: [true, 'Please enter your password'],
+      minlength: [6, 'Password must be at least 6 characters long'],
+      select: false, // Exclude password from queries by default
     },
-    avatar: {
-      public_id: String,
-      url: String,
+    phone: {
+      type: String,
+      required: true,
     },
-    
+    age: {
+      type: Number,
+      required: [true, 'Please enter your age'],
+      min: [1, 'Age must be at least 1'],
+    },
+    profilePicture: {
+      type: String, // URL of profile image
+    },
+    role: {
+      type: String,
+      enum: ['patient', 'admin'], // Only 'patient' and 'admin' roles
+      default: 'patient', // Default role is 'patient'
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },
   { timestamps: true }
 );
-
 // Encrypting password before saving the user
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
@@ -70,4 +83,4 @@ userSchema.methods.getResetPasswordToken = function () {
   return resetToken;
 };
 
-export default mongoose.model("User", userSchema);
+export const User = mongoose.model('User', userSchema);
