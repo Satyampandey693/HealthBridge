@@ -1,74 +1,101 @@
-import { useState, useEffect } from 'react';
-import { DocCard } from '../components/layout/UI/DocCard';
-import { useNavigate } from "react-router-dom"; 
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+import DocCard from "../components/layout/UI/DocCard";
+import "./Doctors.css";
 
 export const Doctors = () => {
-  const [nameQuery, setNameQuery] = useState('');
-  const [cityQuery, setCityQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const navigate=useNavigate();
+  const [cards, setCards] = useState([]);
+  const [filteredCards, setFilteredCards] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [searchCity, setSearchCity] = useState("");
+  const [triggerSearch, setTriggerSearch] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get("category");
 
   useEffect(() => {
-    console.log("Results updated:", results);
-  }, [results]);
+    let url = "/api/doctors";
+    if (category) {
+      url += `?category=${encodeURIComponent(category)}`;
+    }
 
-  const handleSearch = async () => {
-    const queryParams = new URLSearchParams();
-    if (nameQuery) queryParams.append("name", nameQuery);
-    if (cityQuery) queryParams.append("city", cityQuery);
+    axios
+      .get(url)
+      .then((response) => {
+        setCards(response.data);
+        setFilteredCards(response.data);
+      })
+      .catch((error) => {
+        console.log("Error fetching doctors:", error);
+      });
+  }, [category]);
 
-    const response = await fetch(`/api/doctors/search?${queryParams.toString()}`);
-    const data = await response.json();
+  // Run search only when button is clicked
+  useEffect(() => {
+    const lowerName = searchName.toLowerCase();
+    const lowerCity = searchCity.toLowerCase();
 
-    console.log("API Response:", data);
-    setResults([...data]); 
-    console.log(results);
+    const filtered = cards.filter((doc) => {
+      const matchesName = doc.name.toLowerCase().includes(lowerName);
+      const matchesCity = doc.city.toLowerCase().includes(lowerCity);
+      return matchesName && matchesCity;
+    });
+
+    setFilteredCards(filtered);
+  }, [triggerSearch]);
+
+  const handleSearchClick = () => {
+    setTriggerSearch(!triggerSearch); // Toggle to trigger useEffect
   };
-  const handleCardClick = (doctor) => {
-    console.log("Clicked Card:", doctor); 
-    navigate(`/${doctor.name}`); 
+
+  const handleCardClick = (card) => {
+    navigate(`/doctors/list?category=${category}&id=${card._id}`);
   };
 
   return (
-    <div className="search-page">
-      <h1>Search Doctors</h1>
-      <div className="search-inputs">
+    <>
+      <h1>{`${category}`}</h1>
+
+      {/* 🔍 Search Section */}
+      <div className="search-bar">
         <input
           type="text"
-          placeholder="Search by Name"
-          value={nameQuery}
-          onChange={(e) => setNameQuery(e.target.value)}
+          placeholder="Search by name"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Search by City"
-          value={cityQuery}
-          onChange={(e) => setCityQuery(e.target.value)}
+          placeholder="Search by city"
+          value={searchCity}
+          onChange={(e) => setSearchCity(e.target.value)}
         />
-        <button onClick={handleSearch}>Search</button>
+        <button className="search-button" onClick={handleSearchClick}>
+          Search
+        </button>
       </div>
-      <div className="results">
-        {console.log("Rendered Results:", results)}
-        {results.length > 0 ? (
-          <ul>
-            {results.map((doctor,index) => (
-             <span key={index} className="clickable-card" onClick={() => handleCardClick(doctor)}>
-              <DocCard 
-              photoUrl=""
-              name={doctor.name} 
-              fees={doctor.fee}
-              rating={doctor.rating}
-              experience={doctor.experience}
-              city={doctor.city} 
+
+      {/* 🩺 Doctors List */}
+      <div className="cards-container">
+        {Array.isArray(filteredCards) && filteredCards.length > 0 ? (
+          filteredCards.map((card, index) => (
+            <span key={index} className="clickable-card" onClick={() => handleCardClick(card)}>
+              <DocCard
+                name={card.name}
+                city={card.city}
+                experience={card.experience}
+                rating={card.rating}
               />
-             </span>
-            ))}
-          </ul>
+            </span>
+          ))
         ) : (
-          <p>No results found</p>
+          <p>No doctors found for this category or search.</p>
         )}
       </div>
-    </div>
+    </>
   );
 };
-

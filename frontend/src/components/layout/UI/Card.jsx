@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import './Card.css'; // For custom styles, if necessary
 
 const Card = ({ photoUrl, description, title }) => {
@@ -12,5 +13,9 @@ const Card = ({ photoUrl, description, title }) => {
     </div>
   );
 };
-
+Card.propTypes = {
+  title: PropTypes.string,
+  photoUrl: PropTypes.string,
+  description: PropTypes.string
+};
 export default Card;

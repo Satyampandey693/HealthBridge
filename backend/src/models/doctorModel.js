@@ -2,93 +2,111 @@ import mongoose from "mongoose"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
-const doctorSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
+const doctorSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true,
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    dob:{
-        type:Date,
-        required:true
+    dob: {
+      type: Date,
+      required: true,
     },
-    phone_no:{
-        type:String,
-        unique:true,
-        required:true
+    phone_no: {
+      type: String,
+      unique: true,
+      required: true,
     },
-    gender:{
-        type:String,
-        enum:['Male','Female','Other'],
-        required:true
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Other'],
+      required: true,
     },
-    specialization:{
-        type:String,
-        enum: [
-            "Oncologist",
-            "Neurologist",
-            "Cardiologist",
-            "Physician",
-            "Dentist",
-            "Child Specialist",
-            "Dermatologist",
-            "Radiologist",
-            "Gastroenterologist",
-            "Endocrinologist",
-            "Psychiatrist",
-            "Geriatrician",
-            "Nephrologist",
-            "Orthopaedist",
-            "Allergist",
-            "Hematologist",
-            "Internist",
-            "Gynaecologist",
-            "Ophthalmologist",
-            "Anesthesiologist",
-            "Pulmonologist"
-        ],
-        required:true
+    specialization: {
+      type: String,
+      enum: [
+        "Oncologist",
+        "Neurologist",
+        "Cardiologist",
+        "Physician",
+        "Dentist",
+        "Child Specialist",
+        "Dermatologist",
+        "Radiologist",
+        "Gastroenterologist",
+        "Endocrinologist",
+        "Psychiatrist",
+        "Geriatrician",
+        "Nephrologist",
+        "Orthopaedist",
+        "Allergist",
+        "Hematologist",
+        "Internist",
+        "Gynaecologist",
+        "Ophthalmologist",
+        "Anesthesiologist",
+        "Pulmonologist"
+      ],
+      required: true,
     },
-    experience:{
-        type:Number,
-        required:true
+    experience: {
+      type: Number,
+      required: true,
     },
-    rating:{
-        type:Number
-    }
-    ,
-    city:{
-        type:String,
-        required:true
+    rating: {
+      type: Number,
     },
-    country:{
-        type:String,
-        //required:true
+    city: {
+      type: String,
+      required: true,
     },
-    fee:{
-        type:Number,
-        required:true
+    country: {
+      type: String,
     },
-    profilepic:{
-        type:String //url
+    patients: [
+      {
+        patientId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        name: {
+          type: String,
+        },
+      },
+    ],
+    notifications: [
+      {
+        patientId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        name: {
+          type: String,
+        },
+      },
+    ],
+    fee: {
+      type: Number,
+      required: true,
     },
-
-    password:{
-        type:String,
-        required:[true,"Password field is required"]
+    profilepic: {
+      type: String, // url
     },
-    refreshToken:{
-        type:String
-    }
-},
-{
-    timestamps:true
-});
-
+    password: {
+      type: String,
+      required: [true, "Password field is required"],
+    },
+    refreshToken: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  });
 doctorSchema.pre("save",async function (next){
     if(!this.isModified("password"))return next();
 
@@ -110,7 +128,7 @@ doctorSchema.methods.generateAccessToken=function(){
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn:process.env.ACCESS_TOKEN_EXPIRY
+            expiresIn:"7d"
         }
     )
 }
@@ -128,3 +146,4 @@ doctorSchema.methods.generateRefreshToken=function(){
 }
 
 export const Doctor=mongoose.model("Doctor",doctorSchema);
+

@@ -1,5 +1,8 @@
 import { useState } from "react";
 import "./DoctorLogin.css";
+import {useAuth} from "../store/auth"
+import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "react-hot-toast";
 
 export const DoctorLogin = () => {
     const [formData, setFormData] = useState({
@@ -10,21 +13,27 @@ export const DoctorLogin = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
+    const navigate=useNavigate();
+    const storeTokenInLS=useAuth();
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Login Data:", formData);
 
         try {
-            const response = await fetch("/api/doctors/login", {
+            const response = await fetch("/api/doctor/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
+            console.log(response);
 
             const data = await response.json();
+            console.log(data);
             if (response.ok) {
-                alert("Login successful!");
+                storeTokenInLS(data.token,data.doctorId,"doctor");
+                navigate("/patients");
+                toast.success("Login successful!");
+
             } else {
                 alert(`Error: ${data.message}`);
             }

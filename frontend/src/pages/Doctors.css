@@ -1,40 +1,90 @@
-.search-page {
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
+/* Categories.css */
 
-.search-inputs {
+/* Container for cards */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  /*background: url('../photos/doctor-bg.jpg') no-repeat center;*/
+  background-size: cover;
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.search-inputs input {
-  padding: 10px;
-  font-size: 16px;
-  width: 200px;
-}
-
-.search-inputs button {
-  padding: 10px;
-  font-size: 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.search-inputs button:hover {
-  background-color: #45a049;
-}
-.clickable-card {
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
-}
-
-.clickable-card:hover {
-  transform: scale(1.05); /* Slight zoom effect */
-}
+.cards-container {
+    display: flex;                 /* Use flexbox to arrange the cards */
+    flex-wrap: wrap;               /* Allow cards to wrap to the next line */
+    gap: 15px;                     /* Space between cards */
+    padding: 20px;                 /* Padding around the cards container */
+    box-sizing: border-box;        /* Prevent padding from affecting the width */
+  }
+  
+  /* Card wrapper to control layout */
+  .cards-container span {
+    width: calc(25% - 15px);        /* Each card takes up 25% of the container's width for 4 cards in a row */
+    margin-bottom: 30px;            /* Adds more space between rows of cards */
+    display: flex;
+    justify-content: center;        /* Center the card inside the wrapper */
+    box-sizing: border-box;
+  }
+  
+  /* Responsive adjustments for smaller screen sizes */
+  @media (max-width: 1200px) {
+    .cards-container span {
+      width: calc(33.333% - 15px);   /* On medium screens (like laptops), cards take up 33.33% width, so 3 cards per row */
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .cards-container span {
+      width: calc(50% - 15px);   /* On tablets, cards take up 50% of the container's width */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .cards-container span {
+      width: 100%;               /* On mobile devices, cards take up 100% of the width */
+    }
+  }
+  .clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .clickable-card:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+  }
+  .search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+    align-items: center;
+  }
+  
+  .search-bar input {
+    padding: 8px;
+    font-size: 1rem;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .search-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-button:hover {
+    background-color: #0056b3;
+  }
+  

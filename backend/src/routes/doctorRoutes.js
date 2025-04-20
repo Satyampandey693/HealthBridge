@@ -5,6 +5,13 @@ import {
   logout,
   registerUser,
   updateProfile,
+  getPatients,
+  addPatientToDoctor,
+  getDoctorNotifications,
+  addDoctorNotification,
+  insertAny,
+  removeDoctorNotification,
+  removePatientFromDoctor
 } from "../controllers/docController.js";
 const router = express.Router();
 
@@ -31,5 +38,11 @@ router.route("/me/update").put(isAuthenticatedUser, updateProfile);
 //   .get(isAuthenticatedUser, authorizeRoles("admin"), getUserDetails)
 //   .put(isAuthenticatedUser, authorizeRoles("admin"), updateUser)
 //   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
-
+router.get("/:doctorId/patients", getPatients);
+router.post("/add-patient", addPatientToDoctor);
+router.get('/notifications/:doctorId',getDoctorNotifications);
+router.post('/add/:doctorId/notifications', addDoctorNotification);
+router.post('/remove-notification',removeDoctorNotification);
+router.put('/:doctorId/remove-patient', removePatientFromDoctor);
+router.post('/add', insertAny);
 export default router;

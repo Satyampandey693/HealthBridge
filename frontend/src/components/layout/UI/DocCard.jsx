@@ -1,31 +1,30 @@
 import PropTypes from "prop-types";
 import "./DocCard.css";
 
-export const DocCard = ({ photoUrl, name, fees, rating, experience,city }) => {
+const DocCard = ({ name, city, experience, rating }) => {
   return (
-    <div className="doctor-card">
+    <div className="doctor-wrapper">
       <img
-        src={photoUrl || "https://via.placeholder.com/150"}
+        src={"https://via.placeholder.com/150"}
         alt={name || "Doctor Image"}
-        className="doctor-card-image"
+        className="doctor-photo"
       />
-      <div className="doctor-card-content">
-        <h2 className="doctor-card-title">{name}</h2>
-        <p className="doctor-card-info">🩺 Experience:{experience || "N/A"} years</p>
-        <p className="doctor-card-info">📍 Location:{city || "Unknown Location"}</p>
-        <p className="doctor-card-info">💰 Consultancy Fees: ₹{fees || "N/A"}</p>
-        <p className="doctor-card-info">⭐ Rating: {rating || "N/A"}/5</p>
+      <div className="doctor-info-box">
+        <h2 className="doctor-heading">👨‍⚕️ {name}</h2>
+        <p className="doctor-detail">🩺 Experience: {experience || "N/A"} years</p>
+        <p className="doctor-detail">📍 City: {city || "Unknown"}</p>
+        <p className="doctor-detail">💰 Fees: ₹N/A</p>
+        <p className="doctor-detail">⭐ Rating: {rating || "N/A"}/5</p>
       </div>
     </div>
   );
 };
 
 DocCard.propTypes = {
-  doctorName: PropTypes.string,
-  photoUrl: PropTypes.string,
+  name: PropTypes.string,
   experience: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  fees: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   city: PropTypes.string,
   rating: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
+export default DocCard;

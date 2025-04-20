@@ -3,6 +3,8 @@ import { useNavigate,NavLink } from "react-router-dom";
 import { loginUser } from "../../Api/userApi.js";
 import { Toaster, toast } from "react-hot-toast";
 import "./userLogin.css"
+import { useAuth } from "../../store/auth.jsx";
+
 export const LoginUser= () =>{
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -11,13 +13,24 @@ export const LoginUser= () =>{
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  const storeTokenInLS=useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await loginUser(formData);
-      toast.success("Login successful!");
+        const response = await fetch("/api/loginUser", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+        });
+        const data = await response.json();
+        console.log(data);
+        if (response.ok) {
+            storeTokenInLS(data.token,data.userId,"patient");
+            toast.success("Login successful!");
+        } else {
+            alert(`Error: ${data.message}`);
+        }
       navigate("/");
     } catch (error) {
       toast.error(error);

@@ -2,11 +2,14 @@ import express from "express"
 import { fileURLToPath } from 'url';
 import path from "path"
 import dotenv from "dotenv";
+import cors from "cors";
 
 import cookieParser from "cookie-parser";
 import errorMiddleware from "./src/middlewares/errors.js";
 
 import { connectDatabase } from "./config/dbConnect.js";
+
+
 
 //import { cardsData } from "./src/constants.js";
 dotenv.config({ path: "./config/config.env" });
@@ -15,6 +18,17 @@ const port = process.env.PORT||3000
 connectDatabase();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+
+app.use(cors({
+  origin: 'http://localhost:5173', // allow frontend origin
+  credentials: true,               // allow cookies if needed
+}));
+
+app.use(express.json());
+app.use(cookieParser());
+
+
 
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
 
@@ -156,16 +170,9 @@ app.get('/api/cards',(req,res)=>{
       description:"Treats lung and respiratory disorders, including asthma, chronic obstructive pulmonary disease (COPD), and lung infections."
     },
 
-
   ]
   res.send(cardsData);
 })
-
-app.use(express.json());
-app.use(cookieParser());
-
-app.use(express.urlencoded({ extended: true }));
-
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -175,11 +182,13 @@ app.get('/', (req, res) => {
 import userAuthRoutes from "./src/routes/userAuth.js"
 import doctorRoutes from "./src/routes/doctorRoutes.js"
 import doctors from "./src/routes/Doctors.js";
-// console.log("sdfgh");
+import reportRoutes from './src/routes/reportRoutes.js';
+
 app.use("/api",userAuthRoutes);
 
 app.use('/api/doctor',doctorRoutes);
 app.use('/api/doctors',doctors);
+app.use('/api/reports', reportRoutes);
 // Using error middleware
 app.use(errorMiddleware);
 

@@ -4,6 +4,7 @@ import { registerUser } from "../../Api/userApi.js";
 import { Toaster, toast } from "react-hot-toast";
 import "./userRegister.css"
 
+import { useAuth } from "../../store/auth.jsx";
 
 export const RegisterUser = ()=> {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", phone: "", age: "" });
@@ -13,13 +14,24 @@ export const RegisterUser = ()=> {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  const storeTokenInLS=useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await registerUser(formData);
-      toast.success("Signup successful!");
+      const response = await fetch("/api/registerUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+        storeTokenInLS(data.token,data.userId,"patient");
+        toast.success("Signup successful!");
+    } else {
+        alert(`Error: ${data.message}`);
+    }
       navigate("/");
     } catch (error) {
       toast.error(error);

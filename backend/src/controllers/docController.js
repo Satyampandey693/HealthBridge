@@ -1,5 +1,6 @@
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import {Doctor} from "../models/doctorModel.js";
+import { User } from "../models/user.js";
 // import { getResetPasswordTemplate } from "../utils/emailTemplates.js";
 import ErrorHandler from "../utils/errorHandler.js";
 // import sendToken from "../utils/sendToken.js";
@@ -14,7 +15,12 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const user = await Doctor.create({
     name, email,dob,phone_no,city,gender,experience,fee,specialization,password
   });
+  res.status(200).json({
+    message:"signup successful",
+    token:await user.generateAccessToken(),
+    doctorId:user._id.toString(),
 
+  })
   //sendToken(user, 201, res);
 });
 
@@ -39,7 +45,12 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 401));
   }
+  res.status(200).json({
+    message:"login successful",
+    token:await user.generateAccessToken(),
+    doctorId:user._id.toString(),
 
+  })
   //sendToken(user, 200, res);
 });
 
@@ -192,3 +203,156 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
+
+export const addPatientToDoctor = async (req, res) => {
+
+  const { doctorId, patientId} = req.body;
+  console.log(req.body);
+  try {
+    const user=await User.findById(patientId);
+    console.log(user.name);
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+
+    // Check if patient already exists
+    console.log("ya");
+    // const exists = doctor.patients.find(p => p.patientId === patientId);
+    // if (exists) return res.status(400).json({ message: "Patient already added" });
+
+    // Add new patient
+    doctor.patients.push({patientId,name:user.name});
+    await doctor.save();
+
+    res.status(200).json({ message: "Patient added successfully", patients: doctor.patients });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export const getPatients = async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.doctorId);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+
+    res.status(200).json({ patients: doctor.patients });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export const getDoctorNotifications = async (req, res) => {
+  const { doctorId } = req.params;
+
+  try {
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    //console.log(doctor.notifications);
+    res.status(200).json({ notifications: doctor.notifications });
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const addDoctorNotification = async (req, res) => {
+  const { doctorId } = req.params;
+  const { patientId } = req.body;
+
+
+  try {
+    const doctor = await Doctor.findById(doctorId);
+    const user=await User.findById(patientId);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    // Prevent duplicates
+    // if (doctor.notifications.includes(patientId)) {
+    //   return res.status(400).json({ message: 'Notification already exists for this patient' });
+    // }
+
+    doctor.notifications.push({patientId,name:user.name});
+    console.log(patientId);
+    await doctor.save();
+
+    res.status(200).json({ message: 'Notification added successfully', notifications: doctor.notifications });
+  } catch (error) {
+    console.error('Error adding notification:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const removeDoctorNotification = async (req, res) => {
+  const { doctorId,patientId } = req.body;
+
+  try {
+    const doctor = await Doctor.findById(doctorId);
+    const user = await User.findById(patientId);
+    console.log(doctor.name);
+
+    if (!doctor || !user) {
+      return res.status(404).json({ message: 'Doctor or patient not found' });
+    }
+
+    // Filter out the notification
+    doctor.notifications = doctor.notifications.filter(
+      (notification) =>
+        notification.patientId !== patientId &&
+        notification.name !== user.name
+    );
+
+    await doctor.save();
+
+    res.status(200).json({ message: 'Notification removed successfully', notifications: doctor.notifications });
+  } catch (error) {
+    console.error('Error removing notification:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+// Remove patient from doctor's patients list
+export const removePatientFromDoctor = async (req, res) => {
+  const { doctorId } = req.params;
+  const { patientId } = req.body;
+
+  try {
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    // Filter out the patient from the array
+    doctor.patients = doctor.patients.filter(
+      (p) => p.toString() !== patientId
+    );
+
+    await doctor.save();
+    console.log(doctor);
+
+    res.status(200).json({ message: 'Patient removed successfully', patients: doctor.patients });
+  } catch (error) {
+    console.error('Error removing patient:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+export const insertAny=async(req,res)=>{
+
+  const {doctorId,patientId}=req.body;
+  try{
+  const user=await User.findById(patientId);
+  const doctor = await Doctor.findById(doctorId);
+  doctor.notifications.push({patientId,name:user.name});
+  //console.log(doctor.notifications[0].patientId);
+  await doctor.save();
+  res.status(200).json({ message: 'Notification added successfully', notifications: doctor.notifications });
+  }catch(error){
+    console.error('Error adding notification:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}

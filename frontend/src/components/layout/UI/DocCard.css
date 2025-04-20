@@ -1,71 +1,69 @@
-/* Doctor Card Container */
-.doctor-card {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+/* Doctor Container */
+.doctor-wrapper {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 360px;
   width: 100%;
-  max-width: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15px;
+  overflow: hidden;
+  padding: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: center;
 }
 
-.doctor-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+.doctor-wrapper:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* Doctor Image */
-.doctor-card-image {
+.doctor-photo {
   width: 100%;
-  height: 180px;
+  height: 190px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
-/* Card Content */
-.doctor-card-content {
+/* Info Section */
+.doctor-info-box {
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 10px;
+  gap: 6px;
 }
 
-/* Title */
-.doctor-card-title {
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin: 6px 0;
-  color: #333;
+/* Heading */
+.doctor-heading {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #222;
 }
 
-/* Info Text */
-.doctor-card-info {
+/* Text */
+.doctor-detail {
   font-size: 1rem;
-  color: #555;
-  margin: 4px 0;
+  color: #444;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 480px) {
-  .doctor-card {
+  .doctor-wrapper {
     max-width: 90%;
-    padding: 12px;
+    padding: 16px;
   }
 
-  .doctor-card-image {
+  .doctor-photo {
     height: 160px;
   }
 
-  .doctor-card-title {
-    font-size: 1.1rem;
+  .doctor-heading {
+    font-size: 1.2rem;
   }
 
-  .doctor-card-info {
-    font-size: 0.9rem;
+  .doctor-detail {
+    font-size: 0.95rem;
   }
 }

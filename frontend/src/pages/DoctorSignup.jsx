@@ -1,5 +1,8 @@
 import { useState } from "react";
 import "./DoctorSignup.css";
+import {useAuth} from "../store/auth"
+import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "react-hot-toast";
 
 export const DoctorSignup = () => {
     const [formData, setFormData] = useState({
@@ -18,7 +21,8 @@ export const DoctorSignup = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
+    const navigate=useNavigate();
+    const storeTokenInLS=useAuth();
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Form Data:", formData);
@@ -32,7 +36,10 @@ export const DoctorSignup = () => {
 
             const data = await response.json();
             if (response.ok) {
-                alert("Signup successful!");
+                storeTokenInLS(data.token,data.doctorId,"doctor");
+                navigate("/patients");
+                toast.success("Registration successful!");
+                //alert("Signup successful!");
             } else {
                 alert(`Error: ${data.message}`);
             }

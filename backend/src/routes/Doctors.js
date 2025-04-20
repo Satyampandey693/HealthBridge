@@ -1,6 +1,7 @@
-import { search } from "../controllers/Doctors.js";
+import { search,getDoctors } from "../controllers/Doctors.js";
 import express from "express";
 
 const router=express.Router();
-router.route("/search").get(search);
+router.route("/search").post(search);
+router.route("/").get(getDoctors);
 export default router;

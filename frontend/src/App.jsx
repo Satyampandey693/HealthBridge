@@ -7,6 +7,9 @@ import { RouterProvider } from "react-router-dom";
 import { DoctorLogin } from "./pages/DoctorLogin";
 import {LoginUser} from "./pages/AuthentPage/LoginUser";
 import {RegisterUser} from "./pages/AuthentPage/RegisterUser";
+import { UploadForm } from "./pages/uploadForm";
+import { ReportList } from "./pages/ReportList";
+import { MyPatients } from "./pages/MyPatients";
 function App() {
   const router=createBrowserRouter([
     {
@@ -15,11 +18,11 @@ function App() {
       //errorElement:<ErrorPage />,
       children:[
         {
-          path:"/",
+          path:"/doctors",
           element:<Categories/>,
         },
         {
-          path:"/doctors",
+          path:"/doctors/list",
           element:<Doctors/>,
         },
         {
@@ -30,16 +33,28 @@ function App() {
           path:"/doctor/login",
           element:<DoctorLogin/>,
         },
+        {
+          path:"/reports",
+          element:<ReportList/>,
+        },
+        {
+          path:"/upload",
+          element:<UploadForm/>,
+        },
+        {
+          path:"/userlogin",
+          element:<LoginUser/>
+        },
+        {
+          path:"/userRegister",
+          element:<RegisterUser/>
+        },
+        {
+          path:"/patients",
+          element:<MyPatients/>
+        },
       ]
     },
-    {
-      path:"/userlogin",
-      element:<LoginUser/>
-    },
-    {
-      path:"/userRegister",
-      element:<RegisterUser/>
-    }
   ]);
 
   return <RouterProvider router={router} />;

@@ -7,7 +7,7 @@ import crypto from "crypto";
 
 // Register user   =>  /api/registerUser
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
-console.log("HI");
+  
     const { name, email,phone,age, password } = req.body;
   
     const user = await User.create({
@@ -18,7 +18,12 @@ console.log("HI");
       password,
     });
   
-    sendToken(user, 201, res);
+    //sendToken(user, 201, res);
+    res.status(200).json({
+      message:"registration successful",
+      userId:user._id,
+      token:user.getJwtToken()
+    });
   });
 
   // Login user   =>  /api/login
@@ -43,7 +48,12 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
       return next(new ErrorHandler("Invalid email or password", 401));
     }
   
-    sendToken(user, 200, res);
+    //sendToken(user, 200, res);
+    res.status(200).json({
+      message:"login successful",
+      userId:user._id,
+      token:user.getJwtToken()
+    })
   });
   
   // Logout user   =>  /api/logout

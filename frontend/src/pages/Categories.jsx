@@ -9,6 +9,7 @@ export const Categories = () => {
   const navigate = useNavigate(); 
 
   useEffect(() => {
+    console.log("rendering");
     axios
       .get('/api/cards')
       .then((response) => {
@@ -21,7 +22,7 @@ export const Categories = () => {
 
   const handleCardClick = (card) => {
     console.log("Clicked Card:", card); 
-    navigate(`/${card.title}`); 
+    navigate(`/doctors/list?category=${encodeURIComponent(card.title)}`);
   };
 
   return (
