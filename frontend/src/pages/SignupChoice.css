@@ -1,0 +1,49 @@
+/* Container for the entire page */
+.signup-choice-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 36px;
+    color: #333;
+  }
+  
+  p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+  }
+  
+  .buttons-container {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .signup-btn {
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+  
+  .signup-btn:hover {
+    background-color: #218838;
+  }
+  
+  @media (max-width: 768px) {
+    .buttons-container {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+  

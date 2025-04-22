@@ -13,7 +13,7 @@ export const LoginUser= () =>{
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const storeTokenInLS=useAuth();
+  const {storeTokenInLS}=useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -28,10 +28,11 @@ export const LoginUser= () =>{
         if (response.ok) {
             storeTokenInLS(data.token,data.userId,"patient");
             toast.success("Login successful!");
+            navigate("/doctors");
         } else {
             alert(`Error: ${data.message}`);
         }
-      navigate("/");
+        console.log("h");
     } catch (error) {
       toast.error(error);
     }

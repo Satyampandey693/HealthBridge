@@ -14,7 +14,7 @@ export const RegisterUser = ()=> {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const storeTokenInLS=useAuth();
+  const {storeTokenInLS}=useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -29,10 +29,10 @@ export const RegisterUser = ()=> {
     if (response.ok) {
         storeTokenInLS(data.token,data.userId,"patient");
         toast.success("Signup successful!");
+        navigate("/doctors");
     } else {
         alert(`Error: ${data.message}`);
     }
-      navigate("/");
     } catch (error) {
       toast.error(error);
     }

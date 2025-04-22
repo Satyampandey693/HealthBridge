@@ -14,7 +14,7 @@ export const DoctorLogin = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
     const navigate=useNavigate();
-    const storeTokenInLS=useAuth();
+    const {storeTokenInLS}=useAuth();
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Login Data:", formData);

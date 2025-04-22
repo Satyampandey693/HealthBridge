@@ -58,7 +58,6 @@ export const Doctors = () => {
 
   return (
     <>
-      <h1>{`${category}`}</h1>
 
       {/* 🔍 Search Section */}
       <div className="search-bar">

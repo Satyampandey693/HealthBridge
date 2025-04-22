@@ -10,6 +10,14 @@ import {RegisterUser} from "./pages/AuthentPage/RegisterUser";
 import { UploadForm } from "./pages/uploadForm";
 import { ReportList } from "./pages/ReportList";
 import { MyPatients } from "./pages/MyPatients";
+import { PaymentSuccess } from "./pages/Payment/paymentSuccess";
+import { Home1 } from "./pages/Payment/paymentWindow";
+import AdminPanel from "./pages/Admin/AdminPanel";
+import { Logout } from "./pages/Logout";
+import { Home } from "./pages/Home";
+import { LoginChoice } from "./pages/LoginChoice";
+import { SignupChoice } from "./pages/SignupChoice";
+
 function App() {
   const router=createBrowserRouter([
     {
@@ -17,6 +25,18 @@ function App() {
       element:<AppLayout />,
       //errorElement:<ErrorPage />,
       children:[
+        {
+          path:"/",
+          element:<Home/>,
+        },
+        {
+          path:"/login",
+          element:<LoginChoice/>,
+        },
+        {
+          path:"/signup",
+          element:<SignupChoice/>,
+        },
         {
           path:"/doctors",
           element:<Categories/>,
@@ -52,6 +72,22 @@ function App() {
         {
           path:"/patients",
           element:<MyPatients/>
+        },
+        {
+          path:"/payment",
+          element:<Home1/>
+        },
+        {
+          path:"/paymentsuccess",
+          element:<MyPatients/>
+        },
+        {
+          path:"/admin",
+          element:<AdminPanel/>
+        },
+        {
+          path:"/logout",
+          element:<Logout/>
         },
       ]
     },

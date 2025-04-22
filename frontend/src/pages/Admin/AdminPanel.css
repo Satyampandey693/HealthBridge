@@ -1,0 +1,24 @@
+.admin-panel {
+    padding: 20px;
+    font-family: sans-serif;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  .tabs button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    background-color: #ddd;
+    cursor: pointer;
+  }
+  
+  .tabs button.active {
+    background-color: #007bff;
+    color: white;
+  }
+  

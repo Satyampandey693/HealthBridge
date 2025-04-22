@@ -3,18 +3,18 @@ import "./DocCard.css";
 
 const DocCard = ({ name, city, experience, rating }) => {
   return (
-    <div className="doctor-wrapper">
+    <div className="doctor-card">
       <img
-        src={"https://via.placeholder.com/150"}
-        alt={name || "Doctor Image"}
-        className="doctor-photo"
+        src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
+        alt={name || "Doctor"}
+        className="doctor-image"
       />
-      <div className="doctor-info-box">
-        <h2 className="doctor-heading">👨‍⚕️ {name}</h2>
-        <p className="doctor-detail">🩺 Experience: {experience || "N/A"} years</p>
-        <p className="doctor-detail">📍 City: {city || "Unknown"}</p>
-        <p className="doctor-detail">💰 Fees: ₹N/A</p>
-        <p className="doctor-detail">⭐ Rating: {rating || "N/A"}/5</p>
+      <div className="doctor-details">
+        <h3 className="doctor-name">Dr. {name}</h3>
+        <p>🩺 <strong>Experience:</strong> {experience || "N/A"} years</p>
+        <p>📍 <strong>City:</strong> {city || "Unknown"}</p>
+        <p>💰 <strong>Fees:</strong> ₹N/A</p>
+        <p>⭐ <strong>Rating:</strong> {rating || "N/A"}/5</p>
       </div>
     </div>
   );
