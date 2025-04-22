@@ -103,6 +103,11 @@ const doctorSchema = new mongoose.Schema({
     refreshToken: {
       type: String,
     },
+    role: {
+      type: String,
+      enum: ['doctor'], 
+      default: 'doctor', // Default role is 'patient'
+    },
   },
   {
     timestamps: true,

@@ -10,6 +10,8 @@ import {RegisterUser} from "./pages/AuthentPage/RegisterUser";
 import { UploadForm } from "./pages/uploadForm";
 import { ReportList } from "./pages/ReportList";
 import { MyPatients } from "./pages/MyPatients";
+import { DoctorChat } from "./pages/chat/doctorChat";
+import {UserChat} from "./pages/chat/Userchat"
 function App() {
   const router=createBrowserRouter([
     {
@@ -54,6 +56,14 @@ function App() {
           element:<MyPatients/>
         },
       ]
+    },
+    {
+      path:"/DoctorChat",
+      element:<DoctorChat/>
+    },
+    {
+      path:"/UserChat",
+      element:<UserChat />
     },
   ]);
 

@@ -41,6 +41,7 @@ app.get('/', (req, res) => {
 app.use('/api/doctor',doctorRoutes);
 app.use('/api/doctors',doctors);
 
+
 app.get('/api/cards',(req,res)=>{
    const cardsData=[
     {
@@ -184,11 +185,17 @@ import doctorRoutes from "./src/routes/doctorRoutes.js"
 import doctors from "./src/routes/Doctors.js";
 import reportRoutes from './src/routes/reportRoutes.js';
 
+import chatRoutes from "./src/routes/chatRoutes.js"
+import messageRoutes from "./src/routes/messageRoutes.js"
+
 app.use("/api",userAuthRoutes);
 
 app.use('/api/doctor',doctorRoutes);
 app.use('/api/doctors',doctors);
 app.use('/api/reports', reportRoutes);
+
+app.use('/api/chat',chatRoutes)
+app.use('/api/message',messageRoutes)
 // Using error middleware
 app.use(errorMiddleware);
 
@@ -206,3 +213,65 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+
+// Backend: Socket setup (socketServer.js)
+import { Server } from "socket.io";
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5174",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+
+io.on("connection", (socket) => {
+  console.log("User connected");
+
+  socket.on("setup", (user) => {
+      socket.join(user._id);
+      console.log("Room created for user:", user._id);
+      socket.emit("connected");
+  });
+
+  socket.on("join chat", (room) => {
+      socket.join(room);
+      console.log("User joined chat room:", room);
+
+  });
+
+  socket.on("new message", (newMessageRecieved) => {
+    // console.log("new message came")
+    // console.log(newMessageRecieved);
+      const chat = newMessageRecieved.chat;
+
+      if (!chat?.users) return console.log("chat.users not defined");
+
+      chat.users.forEach((user) => {
+        // console.log(user)
+          if (`${user.userId}` === `${newMessageRecieved.sender._id}`) return;
+
+          socket.to(user.userId).emit("message recieved", newMessageRecieved);
+      });
+  });
+  socket.on("delete chat", (data) => {
+    // console.log("new message came")
+    // console.log(newMessageRecieved);
+      // const chat = newMessageRecieved.chat;
+      console.log();
+      const userid=data.user[0]._id;
+      const chatid=data.chatid;
+      // console.log(userid);
+      if (!userid) return console.log("id not defined");
+
+      // chat.users.forEach((user) => {
+      //   console.log(user)
+      //     if (`${user.userId}` === `${newMessageRecieved.sender._id}`) return;
+
+          socket.to(userid).emit("end chat",chatid);
+      // });
+  });
+});
+
+  
