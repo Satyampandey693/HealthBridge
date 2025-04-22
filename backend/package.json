@@ -25,7 +25,11 @@
     "multer": "^1.4.4",
     "multer-gridfs-storage": "^5.0.2",
     "prop-types": "^15.8.1",
+<<<<<<< HEAD
     "razorpay": "^2.9.6"
+=======
+    "socket.io": "^4.8.1"
+>>>>>>> 2e26a8f5f0791e07758624cf28112fffd6e16112
   },
   "description": ""
 }

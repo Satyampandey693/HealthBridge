@@ -10,6 +10,7 @@ import {RegisterUser} from "./pages/AuthentPage/RegisterUser";
 import { UploadForm } from "./pages/uploadForm";
 import { ReportList } from "./pages/ReportList";
 import { MyPatients } from "./pages/MyPatients";
+<<<<<<< HEAD
 import { PaymentSuccess } from "./pages/Payment/paymentSuccess";
 import { Home1 } from "./pages/Payment/paymentWindow";
 import AdminPanel from "./pages/Admin/AdminPanel";
@@ -18,6 +19,10 @@ import { Home } from "./pages/Home";
 import { LoginChoice } from "./pages/LoginChoice";
 import { SignupChoice } from "./pages/SignupChoice";
 
+=======
+import { DoctorChat } from "./pages/chat/doctorChat";
+import {UserChat} from "./pages/chat/Userchat"
+>>>>>>> 2e26a8f5f0791e07758624cf28112fffd6e16112
 function App() {
   const router=createBrowserRouter([
     {
@@ -90,6 +95,14 @@ function App() {
           element:<Logout/>
         },
       ]
+    },
+    {
+      path:"/DoctorChat",
+      element:<DoctorChat/>
+    },
+    {
+      path:"/UserChat",
+      element:<UserChat />
     },
   ]);
 

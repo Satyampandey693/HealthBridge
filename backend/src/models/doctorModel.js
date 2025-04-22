@@ -105,7 +105,11 @@ const doctorSchema = new mongoose.Schema({
     },
     role: {
       type: String,
+<<<<<<< HEAD
       enum: ['doctor', 'admin'], // Only 'patient' and 'admin' roles
+=======
+      enum: ['doctor'], 
+>>>>>>> 2e26a8f5f0791e07758624cf28112fffd6e16112
       default: 'doctor', // Default role is 'patient'
     },
   },
