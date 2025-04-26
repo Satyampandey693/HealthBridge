@@ -43,6 +43,7 @@ export const getUserById=async(req,res)=>{
 export const getDoctorById=async(req,res)=>{
     try{
         const id=req.params.id;
+        console.log(id);
         const data=await Doctor.findOne({_id:id},{password:0});
 
         return res.status(200).json(data);

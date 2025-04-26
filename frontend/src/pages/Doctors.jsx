@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import DocCard from "../components/layout/UI/DocCard";
+import { UserChat } from "./chat/UserChat"; // import here
 import "./Doctors.css";
 
 export const Doctors = () => {
@@ -16,6 +17,7 @@ export const Doctors = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const category = queryParams.get("category");
+  const id = queryParams.get("id");
 
   useEffect(() => {
     let url = "/api/doctors";
@@ -34,7 +36,6 @@ export const Doctors = () => {
       });
   }, [category]);
 
-  // Run search only when button is clicked
   useEffect(() => {
     const lowerName = searchName.toLowerCase();
     const lowerCity = searchCity.toLowerCase();
@@ -56,9 +57,13 @@ export const Doctors = () => {
     navigate(`/doctors/list?category=${category}&id=${card._id}`);
   };
 
+  // ✅ This comes *after* all hooks
+  if (id) {
+    return <UserChat />;
+  }
+
   return (
     <>
-
       {/* 🔍 Search Section */}
       <div className="search-bar">
         <input

@@ -11,7 +11,11 @@ import {
   addDoctorNotification,
   insertAny,
   removeDoctorNotification,
-  removePatientFromDoctor
+  removePatientFromDoctor,
+  addSlotToDoctor,
+  getDoctorDetails,
+  updateSlotStatusById,
+  getAllSlots
 } from "../controllers/docController.js";
 import { isAuthenticatedUser,authorizeRoles } from "../middlewares/auth.js";
 const router = express.Router();
@@ -35,7 +39,7 @@ router.route("/me/update").put(isAuthenticatedUser, updateProfile);
 // router
 //   .route("/admin/users/:id")
 //   .get(isAuthenticatedUser, authorizeRoles("admin"), getUserDetails)
-//   .put(isAuthenticatedUser, authorizeRoles("admin"), updateUser)
+//   .put(isAuthenticatedUser, authorizeR oles("admin"), updateUser)
 //   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 router.route("/:doctorId/patients").get(isAuthenticatedUser,authorizeRoles("doctor","admin"),getPatients);
 router.route("/add-patient").post(isAuthenticatedUser,authorizeRoles("doctor","admin"),addPatientToDoctor);
@@ -44,4 +48,8 @@ router.route('/add/:doctorId/notifications').post(isAuthenticatedUser,authorizeR
 router.route('/remove-notification').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),removeDoctorNotification);
 router.route('/:doctorId/remove-patient').put(isAuthenticatedUser,authorizeRoles("doctor","admin"),removePatientFromDoctor);
 router.route('/add').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),insertAny);
+router.route('/add/:doctorId').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),addSlotToDoctor);
+router.route('/:doctorId').get(isAuthenticatedUser,authorizeRoles("patient","admin"),getDoctorDetails);
+router.route('/slot/update').put(isAuthenticatedUser,authorizeRoles("admin","doctor","patient"),updateSlotStatusById);
+router.route("/slots/:userID").get(isAuthenticatedUser,getAllSlots);
 export default router;

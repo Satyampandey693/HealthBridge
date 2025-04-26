@@ -356,3 +356,109 @@ export const insertAny=async(req,res)=>{
     res.status(500).json({ message: 'Server error' });
   }
 }
+export const addSlotToDoctor = async (req, res) => {
+  const { doctorId } = req.params;
+  const { from, to } = req.body;
+
+  if (!from || !to) {
+    return res.status(400).json({ message: 'from, to, and date are required fields.' });
+  }
+
+  try {
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    const newSlot = {
+      from,
+      to,
+      booked: false
+    };
+
+    doctor.slots.push(newSlot);
+    await doctor.save();
+
+    res.status(200).json({ message: 'Slot added successfully', slots: doctor.slots });
+  } catch (error) {
+    console.error('Error adding slot:', error);
+    res.status(500).json({ message: 'Server error while adding slot' });
+  }
+};
+
+export const getDoctorDetails = async (req, res) => {
+  const { doctorId } = req.params;
+
+  try {
+    const doctor = await Doctor.findById(doctorId)
+      .select('-password -refreshToken') // Exclude sensitive fields
+      .populate('patients.patientId', 'name') // Optional: populate patient names
+      .populate('notifications.patientId', 'name'); // Optional: populate notification names
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    res.status(200).json(doctor);
+  } catch (error) {
+    console.error('Error fetching doctor details:', error);
+    res.status(500).json({ message: 'Server error while fetching doctor details' });
+  }
+};
+
+export const updateSlotStatusById = async (req, res) => {
+  console.log(req.body);
+  const { doctorId, slotId, isBooked } = req.body;
+
+  if (!doctorId || !slotId || typeof isBooked !== 'boolean') {
+    return res.status(400).json({ message: 'Missing or invalid required fields' });
+  }
+
+  try {
+    const doctor = await Doctor.findOneAndUpdate(
+      {
+        _id: doctorId,
+        "slots._id": slotId
+      },
+      {
+        $set: { "slots.$.isBooked": isBooked }
+      },
+      { new: true }
+    );
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor or slot not found' });
+    }
+
+    res.status(200).json({ message: 'Slot booking status updated successfully', doctor });
+  } catch (error) {
+    console.error('Error updating slot status:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+export const getAllSlots = async (req, res) => {
+  const doctorId = req.params.userID;
+
+  try {
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(doctorId);
+
+    // If doctor not found
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found." });
+    }
+
+    // If no slots exist
+    if (!doctor.slots || doctor.slots.length === 0) {
+      return res.status(404).json({ message: "No slots found for this doctor." });
+    }
+
+    // Sort the slots by 'from' time
+    const sortedSlots = doctor.slots.sort((a, b) => new Date(a.from) - new Date(b.from));
+
+    return res.status(200).json({ slots: sortedSlots });
+  } catch (err) {
+    console.error("Error fetching doctor slots:", err);
+    return res.status(500).json({ message: "Something went wrong while fetching slots." });
+  }
+};

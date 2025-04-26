@@ -36,9 +36,6 @@ app.use('/photos', express.static(path.join(__dirname, 'photos')));
 app.use(express.urlencoded({ extended: true }));
 
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 app.use('/api/doctor',doctorRoutes);
 app.use('/api/doctors',doctors);
 
@@ -176,9 +173,6 @@ app.get('/api/cards',(req,res)=>{
   res.send(cardsData);
 })
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 
 // Import all routes
 import userAuthRoutes from "./src/routes/userAuth.js"
@@ -191,23 +185,22 @@ import adminRoutes from "./src/routes/adminRoutes.js"
 import chatRoutes from "./src/routes/chatRoutes.js"
 import messageRoutes from "./src/routes/messageRoutes.js"
 
-app.use("/api",userAuthRoutes);
 
 app.use('/api/doctor',doctorRoutes);
 app.use('/api/doctors',doctors);
 app.use('/api/reports', reportRoutes);
-<<<<<<< HEAD
+
 app.use('/api/payment', PaymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.get("/api/getkey",(req,res)=>{
-  res.status(200).json({ key: "rzp_test_zO7al582cFueyW" })
+  res.status(200).json({ key: "rzp_test_3gZ6jmRiI8A91r" })
 })
-=======
 
 app.use('/api/chat',chatRoutes)
 app.use('/api/message',messageRoutes)
->>>>>>> 2e26a8f5f0791e07758624cf28112fffd6e16112
-// Using error middleware
+
+app.use("/api",userAuthRoutes);
+
 app.use(errorMiddleware);
 
 const server = app.listen(process.env.PORT, () => {
@@ -230,7 +223,7 @@ import { Server } from "socket.io";
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5174",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true
   }

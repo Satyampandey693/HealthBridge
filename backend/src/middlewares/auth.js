@@ -6,40 +6,34 @@ import jwt from "jsonwebtoken";
 
 // Checks if user is authenticated or not
 export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-  const token  = req.header("authorization");
-  if (!token) {
-    return res.status(401).json({message:"No token provided"});
+  const authHeader = req.header("Authorization");
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No or invalid token provided." });
   }
-  const jwtToken=token.replace("Bearer","").trim();
 
-  //console.log("token from auth middleware",jwtToken);
+  const token = authHeader.replace("Bearer ", "").trim();
 
-  try{
-    const isVerified=jwt.verify(jwtToken,process.env.JWT_SECRET);
-
-    const userData=await User.findOne({_id:isVerified.id}).select({
-      password:0,
-    });
-    const doctorData=await Doctor.findOne({_id:isVerified.id}).select({
-      password:0,
-    });
-    if(userData){
-    req.user=userData;
-    req.token=token;
-    req.userID=userData._id;
-    }
-    else if(doctorData){
-      req.user=doctorData;
-    req.token=token;
-    req.userID=doctorData._id;
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    next();
-  }
-  catch(error){
-    return res.status(401).json({message:"Unauthorized.Invalid token"});
-  }
+    let user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      user = await Doctor.findById(decoded._id).select("-password");
+    }
+    if (!user) {
+      return res.status(401).json({ message: "User not found with this token." });
+    }
 
+    req.user = user;
+    req.token = token;
+    req.userID = user._id;
+
+    next();
+  } catch (error) { 
+    console.error("JWT Error:", error.message);
+    return res.status(401).json({ message: "Unauthorized. Invalid or expired token." });
+  }
 });
 
 // Authorize user roles

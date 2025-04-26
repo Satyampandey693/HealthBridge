@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./DoctorChat.css";
 import { io } from "socket.io-client";
+import { useAuth } from "../../store/auth";
 
 const ENDPOINTS = "http://localhost:5000";
 let socket;
@@ -16,6 +17,7 @@ export const DoctorChat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const messagesEndRef = useRef(null);
+  const {authorizationToken}=useAuth();
 
   const doctor = {
     _id: doctorId,
@@ -67,6 +69,9 @@ export const DoctorChat = () => {
   const fetchChats = async () => {
     try {
       const { data } = await axios.get("/api/chat", {
+        headers:{
+          Authorization:authorizationToken
+        },
         withCredentials: true,
       });
       setPatients(
@@ -84,6 +89,9 @@ export const DoctorChat = () => {
   const fetchMessages = async (chatId) => {
     try {
       const { data } = await axios.get(`/api/message/${chatId}`, {
+        headers:{
+          Authorization:authorizationToken
+        },
         withCredentials: true,
       });
       setMessages(data);
@@ -109,6 +117,9 @@ export const DoctorChat = () => {
 
     try {
       const { data } = await axios.post("/api/message", messageData, {
+        headers:{
+          Authorization:authorizationToken
+        },
         withCredentials: true,
       });
       socket.emit("new message", data);
@@ -123,6 +134,9 @@ export const DoctorChat = () => {
     if (window.confirm(`Are you sure you want to remove ${name}?`)) {
       try {
         const { data } = await axios.get(`/api/chat`, {
+          headers:{
+            Authorization:authorizationToken
+          },
           withCredentials: true,
         });
         // console.log(data);
@@ -140,6 +154,9 @@ export const DoctorChat = () => {
         // if(data){
           socket.emit("delete chat",d);
           await axios.delete(`/api/chat/${id}`, {
+            headers:{
+              Authorization:authorizationToken
+            },
             withCredentials: true,
           });
           setPatients((prev) => prev.filter((p) => p._id !== id));

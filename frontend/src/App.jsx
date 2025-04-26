@@ -10,19 +10,15 @@ import {RegisterUser} from "./pages/AuthentPage/RegisterUser";
 import { UploadForm } from "./pages/uploadForm";
 import { ReportList } from "./pages/ReportList";
 import { MyPatients } from "./pages/MyPatients";
-<<<<<<< HEAD
 import { PaymentSuccess } from "./pages/Payment/paymentSuccess";
-import { Home1 } from "./pages/Payment/paymentWindow";
 import AdminPanel from "./pages/Admin/AdminPanel";
 import { Logout } from "./pages/Logout";
 import { Home } from "./pages/Home";
 import { LoginChoice } from "./pages/LoginChoice";
 import { SignupChoice } from "./pages/SignupChoice";
-
-=======
 import { DoctorChat } from "./pages/chat/doctorChat";
 import {UserChat} from "./pages/chat/Userchat"
->>>>>>> 2e26a8f5f0791e07758624cf28112fffd6e16112
+import { DoctorSlotManager } from "./pages/DoctorSlotManager";
 function App() {
   const router=createBrowserRouter([
     {
@@ -79,14 +75,6 @@ function App() {
           element:<MyPatients/>
         },
         {
-          path:"/payment",
-          element:<Home1/>
-        },
-        {
-          path:"/paymentsuccess",
-          element:<MyPatients/>
-        },
-        {
           path:"/admin",
           element:<AdminPanel/>
         },
@@ -94,16 +82,20 @@ function App() {
           path:"/logout",
           element:<Logout/>
         },
+        {
+          path:"/slots",
+          element:<DoctorSlotManager/>
+        }
       ]
     },
     {
       path:"/DoctorChat",
       element:<DoctorChat/>
     },
-    {
-      path:"/UserChat",
-      element:<UserChat />
-    },
+    // {
+    //   path:"/UserChat",
+    //   element:<UserChat />
+    // },
   ]);
 
   return <RouterProvider router={router} />;

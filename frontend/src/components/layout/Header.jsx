@@ -30,25 +30,38 @@ export const Header = () => {
     }
   }, [role]);
 
+  const avatarURL =
+    role === "doctor"
+      ? "https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
+      : role === "patient"
+      ? "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+      : "https://cdn-icons-png.flaticon.com/512/3177/3177440.png"; // Generic for lab or default
+
   return (
     <nav className="navbar">
       <div className="left-section">
         <div className="logo">
           <Link to="/">HealthBridge</Link>
         </div>
-        <ul className="nav-links">
-          {role === "patient" && (
-            <>
-              <li><Link to="/doctors">Doctors</Link></li>
-              <li><Link to="/medicines">Medicines</Link></li>
-              <li><Link to="/lab-tests">Lab Tests</Link></li>
-              <li><Link to="/reports">Reports</Link></li>
-            </>
-          )}
-          {role === "doctor" && (
-            <li><Link to="/patients">Patients</Link></li>
-          )}
-        </ul>
+
+        {role !== "lab" && (
+          <ul className="nav-links">
+            {role === "patient" && (
+              <>
+                <li><Link to="/doctors">Doctors</Link></li>
+                <li><Link to="/medicines">Medicines</Link></li>
+                <li><Link to="/lab-tests">Lab Tests</Link></li>
+                <li><Link to="/reports">Reports</Link></li>
+              </>
+            )}
+            {role === "doctor" && (
+              <>
+                <li><Link to="/patients">Patients</Link></li>
+                <li><Link to="/slots">Slots</Link></li>
+              </>
+            )}
+          </ul>
+        )}
       </div>
 
       <div className="right-section">
@@ -73,7 +86,7 @@ export const Header = () => {
           <>
             <Link to="/profile" className="profile-icon">
               <img
-                src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
+                src={avatarURL}
                 alt="Profile"
                 className="avatar"
               />

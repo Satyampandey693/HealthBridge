@@ -9,7 +9,7 @@ router.route("/doctors").get(isAuthenticatedUser,authorizeRoles("admin"),getAllD
 router.route("/user/delete/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteUserById);
 router.route("/doctor/delete/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteDoctorById);
 router.route("/user/:id").get(isAuthenticatedUser,authorizeRoles("admin"),getUserById);
-router.route("/doctor/:id").get(isAuthenticatedUser,authorizeRoles("admin"),getDoctorById);
+router.route("/doctor/:id").get(isAuthenticatedUser,authorizeRoles("patient"),getDoctorById);
 router.route("/user/update/:id").patch(isAuthenticatedUser,authorizeRoles("admin"),updateUserById);
 router.route("/doctor/update/:id").patch(isAuthenticatedUser,authorizeRoles("admin"),updateDoctorById);
 

@@ -14,9 +14,10 @@ const getUserByRole = async (id, role) => {
 //@access          Protected
 export const accessChat = asyncHandler(async (req, res) => {
   const { userId, role } = req.body;
-
+  console.log(req.body);
   if (!userId || !role) {
     return res.status(400).json({ message: "Missing userId or role" });
+    console.log("not present");
   }
 
   let isChat = await Chat.findOne({
@@ -55,6 +56,7 @@ export const accessChat = asyncHandler(async (req, res) => {
     res.status(200).json(chat);
   } catch (error) {
     res.status(400);
+    console.log("hello");
     throw new Error(error.message);
   }
 });
