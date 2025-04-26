@@ -19,6 +19,9 @@ import { SignupChoice } from "./pages/SignupChoice";
 import { DoctorChat } from "./pages/chat/doctorChat";
 import {UserChat} from "./pages/chat/Userchat"
 import { DoctorSlotManager } from "./pages/DoctorSlotManager";
+
+import {LabPage }from "./pages/Lab/LabPage";
+import {LabCategories} from "./pages/Lab/LabCategories";
 function App() {
   const router=createBrowserRouter([
     {
@@ -86,6 +89,15 @@ function App() {
           path:"/slots",
           element:<DoctorSlotManager/>
         }
+        ,
+        {
+          path:"/Lab",
+          element:<LabCategories/>
+        },
+        {
+          path:"/Labs/list",
+          element:<LabPage/>
+        },
       ]
     },
     {
