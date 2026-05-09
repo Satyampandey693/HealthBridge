@@ -23,7 +23,35 @@ export const Header = () => {
       console.error("Error fetching notifications", err);
     }
   };
-
+const renderAuthButtons = () => {
+  switch (role) {
+    case "doctor":
+      return (
+        <>
+          <Link to="/doctor/profile" className="profile-icon">
+            <img src={avatarURL} alt="Profile" className="avatar" />
+          </Link>
+          <Link to="/logout" className="auth-btn">Logout</Link>
+        </>
+      );
+    case "patient": // Assuming a logged-in user
+      return (
+        <>
+          <Link to="/user/profile" className="profile-icon">
+             <img src={avatarURL} alt="Profile" className="avatar" />
+          </Link>
+          <Link to="/logout" className="auth-btn">Logout</Link>
+        </>
+      );
+    default: // Not logged in
+      return (
+        <>
+          <Link to="/login" className="auth-btn">Login</Link>
+          <Link to="/signup" className="auth-btn">Signup</Link>
+        </>
+      );
+  }
+};
   useEffect(() => {
     if (role === "doctor") {
       fetchNotifications();
@@ -82,23 +110,7 @@ export const Header = () => {
           </div>
         )}
 
-        {isLoggedIn ? (
-          <>
-            <Link to="/profile" className="profile-icon">
-              <img
-                src={avatarURL}
-                alt="Profile"
-                className="avatar"
-              />
-            </Link>
-            <Link to="/logout" className="auth-btn">Logout</Link>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="auth-btn">Login</Link>
-            <Link to="/signup" className="auth-btn">Signup</Link>
-          </>
-        )}
+    {renderAuthButtons()}
       </div>
     </nav>
   );

@@ -21,6 +21,7 @@ export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
     if (!user) {
       user = await Doctor.findById(decoded._id).select("-password");
     }
+
     if (!user) {
       return res.status(401).json({ message: "User not found with this token." });
     }

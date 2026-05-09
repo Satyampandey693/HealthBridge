@@ -19,6 +19,10 @@ import { SignupChoice } from "./pages/SignupChoice";
 import { DoctorChat } from "./pages/chat/doctorChat";
 import {UserChat} from "./pages/chat/Userchat"
 import { DoctorSlotManager } from "./pages/DoctorSlotManager";
+import { UserProfile } from "./pages/UserProfile";
+import { DoctorProfile } from "./pages/doctorProfile";
+import { LabTest } from "./pages/labTests";
+import { Medicines } from "./pages/Medicines";
 
 import {LabPage }from "./pages/Lab/LabPage";
 import {LabCategories} from "./pages/Lab/LabCategories";
@@ -97,6 +101,22 @@ function App() {
         {
           path:"/Labs/list",
           element:<LabPage/>
+        },
+        {
+          path:"/user/profile",
+          element:<UserProfile/>
+        },
+        {
+          path:"/doctor/profile",
+          element:<DoctorProfile/>
+        },
+         {
+          path:"/lab-tests",
+          element:<LabTest/>
+        },
+         {
+          path:"/medicines",
+          element:<Medicines/>
         },
       ]
     },

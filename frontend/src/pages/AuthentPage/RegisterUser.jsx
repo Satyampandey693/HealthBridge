@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate ,NavLink} from "react-router-dom";
-import { registerUser } from "../../Api/userApi.js";
 import { Toaster, toast } from "react-hot-toast";
 import "./userRegister.css"
 

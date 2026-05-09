@@ -1,0 +1,90 @@
+/* ComingSoon.css */
+
+.coming-soon-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center; /* Horizontal center */
+  align-items: center;     /* Vertical center */
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.coming-soon-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.coming-soon-text {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  animation: fadeInDown 1s ease-out;
+}
+
+.coming-soon-subtext {
+  font-size: 1.2rem;
+  color: #4b5563;
+  margin-top: 15px;
+  animation: fadeInUp 1.2s ease-out;
+}
+
+/* Optional: Animated progress bar for style */
+.loading-bar {
+  width: 200px;
+  height: 4px;
+  background: #e5e7eb;
+  margin: 30px auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.loading-progress {
+  width: 40%;
+  height: 100%;
+  background: #3b82f6; /* HealthBridge Blue */
+  animation: slide 2s infinite ease-in-out;
+}
+
+.back-btn {
+  margin-top: 20px;
+  padding: 10px 25px;
+  border: 1px solid #3b82f6;
+  background: transparent;
+  color: #3b82f6;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+@media (max-width: 768px) {
+  .coming-soon-text {
+    font-size: 2.5rem;
+  }
+}

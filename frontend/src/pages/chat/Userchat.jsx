@@ -15,7 +15,7 @@ const DoctorInfo = ({ doctorInfo }) => (
     <img src={"/123.png"} alt="Doctor" className="uc-doctor-photo" />
     <div className="uc-doctor-description">
       <h3>Dr. {doctorInfo?.name || ""}</h3>
-      <p>{doctorInfo?.specialization || ""} with {doctorIn fo?.experience || ""}+ years of experience.</p>
+      <p>{doctorInfo?.specialization || ""} with {doctorInfo?.experience || ""}+ years of experience.</p>
     </div>
   </div>
 );
@@ -142,7 +142,7 @@ export const UserChat = () => {
     socket.emit("setup", user);
     socket.on("connected", () => console.log("Socket connected"));
     return () => socket.disconnect();
-  }, []);
+  });
 
   useEffect(() => {
     socket.on("message recieved", (newMessage) => {
