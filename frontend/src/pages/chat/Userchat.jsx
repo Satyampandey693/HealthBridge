@@ -142,7 +142,7 @@ export const UserChat = () => {
     socket.emit("setup", user);
     socket.on("connected", () => console.log("Socket connected"));
     return () => socket.disconnect();
-  });
+  }, []);
 
   useEffect(() => {
     socket.on("message recieved", (newMessage) => {
@@ -222,13 +222,36 @@ export const UserChat = () => {
       console.error("Error setting up chat after verification:", err);
     }
   };
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
 
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+    script.onload = () => {
+      resolve(true);
+    };
+
+    script.onerror = () => {
+      resolve(false);
+    };
+
+    document.body.appendChild(script);
+  });
+};
   const CheckoutHandler = async (slot) => {
     try {
       const { data: { key: razorKey } } = await axios.get("http://localhost:5000/api/getkey");
       const { data: { order } } = await axios.post("http://localhost:5000/api/payment/checkout", { amount: doctorInfo.fee });
       const doctorId = doctorIdRef.current;
       console.log(order);
+      console.log(razorKey)
       const options = {
         key: razorKey,
         amount: order.amount,

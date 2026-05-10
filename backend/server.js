@@ -193,7 +193,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/payment', PaymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.get("/api/getkey",(req,res)=>{
-  res.status(200).json({ key: "rzp_test_3gZ6jmRiI8A91r" })
+  res.status(200).json({ key: "rzp_test_SnbBJr7ZcFyKy9" })
 })
 
 app.use('/api/chat',chatRoutes)
