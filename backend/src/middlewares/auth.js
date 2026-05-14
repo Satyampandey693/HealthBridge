@@ -7,8 +7,8 @@ import jwt from "jsonwebtoken";
 // Checks if user is authenticated or not
 export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   const authHeader = req.header("Authorization");
-
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    console.log("dikkat yaha h")
     return res.status(401).json({ message: "No or invalid token provided." });
   }
 
@@ -19,9 +19,10 @@ export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
     
     let user = await User.findById(decoded.id).select("-password");
     if (!user) {
+      
       user = await Doctor.findById(decoded._id).select("-password");
     }
-
+    
     if (!user) {
       return res.status(401).json({ message: "User not found with this token." });
     }

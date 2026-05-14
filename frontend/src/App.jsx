@@ -16,7 +16,7 @@ import { Logout } from "./pages/Logout";
 import { Home } from "./pages/Home";
 import { LoginChoice } from "./pages/LoginChoice";
 import { SignupChoice } from "./pages/SignupChoice";
-import { DoctorChat } from "./pages/chat/doctorChat";
+import { DoctorChat } from "./pages/chat/DoctorChat";
 import {UserChat} from "./pages/chat/Userchat"
 import { DoctorSlotManager } from "./pages/DoctorSlotManager";
 import { UserProfile } from "./pages/UserProfile";

@@ -44,7 +44,7 @@ router.route("/me/update").put(isAuthenticatedUser, updateProfile);
 router.route("/:doctorId/patients").get(isAuthenticatedUser,authorizeRoles("doctor","admin"),getPatients);
 router.route("/add-patient").post(isAuthenticatedUser,authorizeRoles("doctor","admin"),addPatientToDoctor);
 router.route('/notifications/:doctorId').get(isAuthenticatedUser,authorizeRoles("doctor","admin"),getDoctorNotifications);
-router.route('/add/:doctorId/notifications').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),addDoctorNotification);
+router.route('/add/:doctorId/notifications').post(isAuthenticatedUser,authorizeRoles("patient","admin"),addDoctorNotification);
 router.route('/remove-notification').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),removeDoctorNotification);
 router.route('/:doctorId/remove-patient').put(isAuthenticatedUser,authorizeRoles("doctor","admin"),removePatientFromDoctor);
 router.route('/add').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),insertAny);

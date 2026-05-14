@@ -207,7 +207,7 @@ export const UserChat = () => {
     try {
       const { data } = await axios.post(
         "/api/chat",
-        { userId: doctorIdRef.current, role: "patient" },
+        { userId: doctorIdRef.current, role: "doctor" },
         {
           headers: {
             Authorization: authorizationToken,
@@ -215,6 +215,7 @@ export const UserChat = () => {
           withCredentials: true,
         }
       );
+      
       setMessages(data.messages || []);
       chatIdRef.current = data._id;
       socket.emit("join chat", chatIdRef.current);
@@ -307,6 +308,18 @@ const loadRazorpayScript = () => {
 
               // 3. Handle post-payment actions
               handlePayment();
+              await axios.post(`/api/doctor/add/${doctorIdRef.current}/notifications`,
+        { 
+        patientId: userId
+      },
+        {
+          headers: {
+            Authorization: authorizationToken,
+          },
+          withCredentials: true,
+        },
+        
+      );
             } else {
               toast.error("Payment verification failed.");
             }

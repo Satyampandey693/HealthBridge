@@ -7,17 +7,21 @@ import axios from "axios";
 import { useAuth } from "../../store/auth";
 
 export const Header = () => {
-  const { isLoggedIn } = useAuth();
+  const {authorizationToken} = useAuth();
   const role = localStorage.getItem("role");
   const doctorId = localStorage.getItem("userID");
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
+
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/doctor/notifications/${doctorId}`);
+      const res = await axios.get(`http://localhost:5000/api/doctor/notifications/${doctorId}`,{ headers: {
+            Authorization: authorizationToken,
+          },
+          withCredentials: true,});
       setNotifications(res.data.notifications);
     } catch (err) {
       console.error("Error fetching notifications", err);

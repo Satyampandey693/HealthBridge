@@ -1,6 +1,9 @@
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import {Doctor} from "../models/doctorModel.js";
 import { User } from "../models/user.js";
+import { Payment } from "../models/payment.js";
+
+import { Chat } from "../models/chatModel.js";
 // import { getResetPasswordTemplate } from "../utils/emailTemplates.js";
 import ErrorHandler from "../utils/errorHandler.js";
 // import sendToken from "../utils/sendToken.js";
@@ -230,13 +233,28 @@ export const addPatientToDoctor = async (req, res) => {
 };
 
 export const getPatients = async (req, res) => {
-  try {
+ try {
     const doctor = await Doctor.findById(req.params.doctorId);
-    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+    
+    // We need to attach the chatId to each patient in the array
+    const patientsWithChats = await Promise.all(doctor.patients.map(async (p) => {
+      const chat = await Chat.findOne({
+        $and: [
+          { users: { $elemMatch: { userId: p.patientId } } },
+          { users: { $elemMatch: { userId: req.params.doctorId } } }
+        ]
+      });
+      
+      return {
+        patientId: p.patientId,
+        name: p.name,
+        chatId: chat ? chat._id : null // Now chatId is defined!
+      };
+    }));
 
-    res.status(200).json({ patients: doctor.patients });
-  } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(200).json({ patients: patientsWithChats });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -260,7 +278,7 @@ export const getDoctorNotifications = async (req, res) => {
 export const addDoctorNotification = async (req, res) => {
   const { doctorId } = req.params;
   const { patientId } = req.body;
-
+  console.log("yes i am here",doctorId,patientId);
 
   try {
     const doctor = await Doctor.findById(doctorId);
@@ -277,7 +295,7 @@ export const addDoctorNotification = async (req, res) => {
     doctor.notifications.push({patientId,name:user.name});
     console.log(patientId);
     await doctor.save();
-
+     console.log("notif passed");
     res.status(200).json({ message: 'Notification added successfully', notifications: doctor.notifications });
   } catch (error) {
     console.error('Error adding notification:', error);
@@ -320,27 +338,40 @@ export const removePatientFromDoctor = async (req, res) => {
   const { patientId } = req.body;
 
   try {
-    const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
+    await Payment.deleteMany({ 
+      userId: patientId, 
+      doctorId: doctorId 
+    });
+    console.log("hua delete 1")
+    await Chat.findOneAndDelete({
+      $and: [
+        { users: { $elemMatch: { userId: patientId } } },
+        { users: { $elemMatch: { userId: doctorId } } }
+      ]
+    });
+ console.log("hua delete 2")
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      doctorId,
+      { 
+        $pull: { patients: { patientId: patientId } } 
+      },
+      { new: true } 
+    )
+ console.log("hua delete 3")
+    if (!updatedDoctor) {
       return res.status(404).json({ message: 'Doctor not found' });
     }
 
-    // Filter out the patient from the array
-    doctor.patients = doctor.patients.filter(
-      (p) => p.toString() !== patientId
-    );
+    res.status(200).json({ 
+      message: 'Payment, Chat, and Patient record removed successfully', 
+      patients: updatedDoctor.patients 
+    });
 
-    await doctor.save();
-    console.log(doctor);
-
-    res.status(200).json({ message: 'Patient removed successfully', patients: doctor.patients });
   } catch (error) {
-    console.error('Error removing patient:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error in multi-step removal:', error);
+    res.status(500).json({ message: 'Server error during removal process' });
   }
 };
-
-
 export const insertAny=async(req,res)=>{
 
   const {doctorId,patientId}=req.body;

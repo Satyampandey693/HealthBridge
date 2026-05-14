@@ -6,7 +6,7 @@ const chatModel = mongoose.Schema(
     users: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, required: true },
-        role: { type: String, enum: ["patient", "Doctor"], required: true },
+        role: { type: String, enum: ["patient", "doctor"], required: true },
       }
     ],
     latestMessage: {

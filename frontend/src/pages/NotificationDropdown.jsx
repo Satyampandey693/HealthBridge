@@ -1,21 +1,30 @@
 import PropTypes from "prop-types";
 import "./NotificationDropdown.css";
 import axios from "axios";
+import { useAuth } from "../store/auth";
 
 const NotificationDropdown = ({ notifications, fetchNotifications }) => {
   const doctorId = localStorage.getItem("userID");
 
+ const {authorizationToken}=useAuth();
   const handleAccept = async (patient) => {
     try {
       await axios.post("http://localhost:5000/api/doctor/add-patient", {
         doctorId,
         patientId: patient.patientId,
         // patientName: patient.name,
-      });
+      },{ headers: {
+            Authorization: authorizationToken,
+          },
+          withCredentials: true,});
       await axios.post("http://localhost:5000/api/doctor/remove-notification", {
         doctorId,
         patientId: patient.patientId,
-      });
+        
+      },{ headers: {
+            Authorization: authorizationToken,
+          },
+          withCredentials: true,});
 
       fetchNotifications();
     } catch (err) {
@@ -28,7 +37,10 @@ const NotificationDropdown = ({ notifications, fetchNotifications }) => {
       await axios.post("http://localhost:5000/api/doctor/remove-notification", {
         doctorId,
         patientId: patient.patientId,
-      });
+      },{ headers: {
+            Authorization: authorizationToken,
+          },
+          withCredentials: true,});
       
       fetchNotifications();
     } catch (err) {
@@ -43,7 +55,6 @@ const NotificationDropdown = ({ notifications, fetchNotifications }) => {
           <span>{patient.name}</span>
           <div className="actions">
             <button onClick={() => handleAccept(patient)}>Approve</button>
-            <button onClick={() => handleDecline(patient)}>Decline</button>
           </div>
         </div>
       ))}

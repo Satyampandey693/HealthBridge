@@ -14,7 +14,7 @@ const getUserByRole = async (id, role) => {
 //@access          Protected
 export const accessChat = asyncHandler(async (req, res) => {
   const { userId, role } = req.body;
-  console.log(req.body);
+  console.log("role is ",role);
   if (!userId || !role) {
     return res.status(400).json({ message: "Missing userId or role" });
     console.log("not present");
@@ -46,6 +46,7 @@ export const accessChat = asyncHandler(async (req, res) => {
     ],
   };
 
+  console.log(chatData)
   try {
     const createdChat = await Chat.create(chatData);
     const populatedUsers = await Promise.all(

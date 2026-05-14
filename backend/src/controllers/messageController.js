@@ -15,21 +15,17 @@ const getUserInfo = async (userId, role) => {
 //@access          Protected
 export const allMessages = asyncHandler(async (req, res) => {
   try {
-    // console.log(req.params.chatId);
     const messages = await Message.find({ chat: req.params.chatId }).populate("chat");
-// console.log(messages)
     const populatedMessages = await Promise.all(
       messages.map(async (msg) => {
         const sender = await getUserInfo(msg.sender.userId, msg.sender.role);
-       
-
         return {
           ...msg.toObject(),
           sender,
         };
       })
     );
-//  console.log(populatedMessages)
+    //console.log(populatedMessages)
     res.json(populatedMessages);
   } catch (error) {
     res.status(400);
@@ -42,7 +38,7 @@ export const allMessages = asyncHandler(async (req, res) => {
 //@access          Protected
 export const sendMessage = asyncHandler(async (req, res) => {
   const { content, chatId,role } = req.body;
-  // console.log(req.body)
+  console.log(req.body)
 
   if (!content || !chatId) {
     console.log("Invalid data passed into request");
@@ -69,7 +65,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
    
 
     await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
-
+    console.log("show me the chat 3")
     res.json({
       ...message.toObject(),
       sender: senderInfo,
