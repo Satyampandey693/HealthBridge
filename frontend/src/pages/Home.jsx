@@ -7,7 +7,6 @@ import {
   FaUserMd,
   FaShieldAlt,
   FaClock,
-  FaVideo,
   FaStar,
 } from "react-icons/fa";
 import api from "../api/client.js";
@@ -21,11 +20,6 @@ const services = [
     icon: <FaComments />,
     title: "Talk to Doctors on Chat",
     desc: "Real-time, secure consultations with certified doctors — anytime, anywhere.",
-  },
-  {
-    icon: <FaVideo />,
-    title: "Video Consultations",
-    desc: "Face-to-face video appointments with specialists from the comfort of home.",
   },
   {
     icon: <FaCalendarCheck />,
@@ -92,7 +86,7 @@ export const Home = () => {
               <span className="home-hero__highlight">anytime, anywhere.</span>
             </h1>
             <p>
-              Connect with top doctors, book appointments, consult over chat or video,
+              Connect with top doctors, book appointments, consult over chat,
               and manage your health records — all in one place.
             </p>
             <div className="home-hero__cta">
@@ -120,7 +114,7 @@ export const Home = () => {
             <span className="hb-eyebrow">What we offer</span>
             <h2>Everything you need for better care</h2>
           </div>
-          <div className="home-grid home-grid--4">
+          <div className="home-grid home-grid--3">
             {services.map((s) => (
               <div key={s.title} className="hb-card home-feature">
                 <div className="home-feature__icon">{s.icon}</div>
