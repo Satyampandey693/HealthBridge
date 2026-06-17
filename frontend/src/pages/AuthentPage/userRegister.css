@@ -1,74 +1,82 @@
-
+/* ===================== Auth — Register ===================== */
 .userRegister-container {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to right, #10b981, #14b8a6);
-    padding: 16px;
-    box-sizing: border-box;
-  }
-  
-  .userRegister-box {
-    background: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 16px;
-    padding: 32px;
-    max-width: 400px;
-    width: 100%;
-  }
-  
-  .userRegister-title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 800;
-    color: #111827;
-    margin-bottom: 24px;
-  }
-  
-  .userRegister-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .userRegister-input-field {
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 16px;
-    width: 100%;
-  }
-  
-  .userRegister-button {
-    padding: 12px;
-    background: #059669;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .userRegister-button:hover {
-    background: #047857;
-  }
-  
-  .userRegister-footer {
-    text-align: center;
-    font-size: 14px;
-    color: #6b7280;
-  }
-  
-  .userRegister-link {
-    color: #059669;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  
-  .userRegister-link:hover {
-    text-decoration: underline;
-  }
-  
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  background: var(--grad-hero);
+}
+
+.userRegister-box {
+  width: 100%;
+  max-width: 440px;
+  background: var(--c-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-12) var(--space-8);
+}
+
+.userRegister-title {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 var(--space-8);
+  color: var(--c-text);
+}
+
+.userRegister-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.userRegister-input-field {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--c-bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.userRegister-input-field:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+  background: var(--c-surface);
+}
+
+.userRegister-button {
+  margin-top: var(--space-2);
+  padding: 0.8rem;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--grad-brand);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-brand);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+}
+.userRegister-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.userRegister-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.userRegister-footer {
+  text-align: center;
+  margin-top: var(--space-6);
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
+}
+.userRegister-link {
+  color: var(--c-primary-dark);
+  font-weight: 600;
+}

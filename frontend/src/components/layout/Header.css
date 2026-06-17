@@ -1,139 +1,150 @@
-/* Reset Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Navbar Styling */
+/* ===================== Navbar ===================== */
 .navbar {
   width: 100%;
-  height: 80px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #333, #1e1e1e);
-  padding: 0 50px;
-  color: white;
-  position: relative;
+  background: var(--c-surface);
+  padding: 0 var(--space-8);
+  border-bottom: 1px solid var(--c-border);
+  position: sticky;
   top: 0;
-  left: 0;
   z-index: 1000;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Left Section: Logo + Navigation Links */
 .left-section {
   display: flex;
   align-items: center;
+  gap: var(--space-8);
 }
 
-/* Logo Styling */
+/* Logo */
 .logo a {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 800;
   text-decoration: none;
-  color: white;
-  margin-right: 40px;
-  transition: transform 0.3s ease-in-out;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
 }
 
-.logo a:hover {
-  transform: scale(1.1);
-  color: #ffcc00;
-}
-
-/* Navigation Links */
+/* Nav links */
 .nav-links {
   display: flex;
   list-style: none;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
 }
-
-.nav-links li {
-  margin-right: 20px;
-}
-
 .nav-links a {
   text-decoration: none;
-  color: white;
-  font-size: 18px;
+  color: var(--c-text);
+  font-size: 0.97rem;
   font-weight: 500;
   position: relative;
-  transition: color 0.3s ease-in-out;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
 }
-
-/* Underline hover effect */
 .nav-links a::after {
   content: "";
   display: block;
   width: 0;
-  height: 3px;
-  background: #ffcc00;
-  transition: width 0.3s ease-in-out;
+  height: 2px;
+  background: var(--c-primary);
+  transition: width 0.25s ease;
   position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: -4px;
+  left: 0;
 }
-
 .nav-links a:hover {
-  color: #ffcc00;
+  color: var(--c-primary-dark);
 }
-
 .nav-links a:hover::after {
   width: 100%;
 }
+
+/* Right section */
 .right-section {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--space-4);
 }
 
 .auth-btn {
   text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-full);
+  background: var(--grad-brand);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-brand);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.auth-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
 }
 
-.signup-btn {
-  background-color: #28a745;
-}
+/* Profile */
 .profile-icon {
   display: flex;
   align-items: center;
 }
-
 .avatar {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #007bff;
+  border: 2px solid var(--c-primary);
+  transition: transform 0.2s ease;
+}
+.avatar:hover {
+  transform: scale(1.08);
+}
+
+/* Notifications */
+.notification-container {
+  position: relative;
 }
 .bell-wrapper {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
   cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
 }
-
+.bell-wrapper:hover {
+  background: var(--c-surface-alt);
+}
 .bell-icon {
-  font-size: 22px;
-  color: white;
+  font-size: 1.3rem;
+  color: var(--c-text-muted);
 }
-
 .notification-badge {
   position: absolute;
-  top: -5px;
-  right: -8px;
-  background-color: red;
+  top: -2px;
+  right: -2px;
+  background-color: var(--c-danger);
   color: white;
-  font-size: 11px;
-  padding: 2px 6px;
+  font-size: 0.65rem;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-/* Right Section: Login & Sign Up Buttons */
+@media (max-width: 720px) {
+  .navbar { padding: 0 var(--space-4); }
+  .nav-links { gap: var(--space-4); }
+  .nav-links a { font-size: 0.9rem; }
+  .left-section { gap: var(--space-4); }
+}

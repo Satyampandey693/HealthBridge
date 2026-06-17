@@ -1,165 +1,96 @@
-/* ChatApp.css */
-
+/* ===================== Doctor — My Patients ===================== */
 .chat-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: sans-serif;
-    background: #f0f2f5;
-  }
-  
-  .no-patients {
-    text-align: center;
-  }
-  
-  .no-patients input {
-    margin: 10px;
-    padding: 5px;
-  }
-  
-  .chat-wrapper {
-    display: flex;
-    width: 90%;
-    max-width: 1200px;
-    height: 90vh;
-    border: 1px solid #ddd;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-  
-  .sidebar {
-    width: 30%;
-    border-right: 1px solid #ddd;
-    overflow-y: auto;
-    padding: 10px;
-    background: #f8f8f8;
-  }
-  
-  .sidebar h3 {
-    margin-top: 0;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar ul li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-  }
-  
-  .sidebar ul li.active {
-    background: #e6e6e6;
-  }
-  
-  .add-patient {
-    margin-top: 10px;
-  }
-  
-  .add-patient input {
-    width: calc(100% - 70px);
-    padding: 5px;
-  }
-  
-  .add-patient button {
-    width: 60px;
-    padding: 5px;
-  }
-  
-  .chat-window {
-    width: 70%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .chat-header {
-    padding: 10px;
-    background: #eee;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .chat-messages {
-    flex: 1;
-    padding: 10px;
-    overflow-y: auto;
-    background: #f9f9f9;
-  }
-  
-  .chat-message {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .chat-message.user {
-    align-items: flex-end;
-  }
-  
-  .chat-message span {
-    display: inline-block;
-    padding: 8px 12px;
-    border-radius: 20px;
-    background: #dcf8c6;
-    max-width: 70%;
-    word-wrap: break-word;
-  }
-  
-  .chat-message.user span {
-    background: #dcf8c6;
-  }
-  
-  .chat-message .timestamp {
-    font-size: 0.8em;
-    color: #999;
-    margin-top: 2px;
-  }
-  
-  .chat-input {
-    display: flex;
-    border-top: 1px solid #ddd;
-    padding: 10px;
-  }
-  
-  .chat-input input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    outline: none;
-  }
-  
-  .chat-input button {
-    margin-left: 10px;
-    padding: 0 20px;
-    border: none;
-    background: #2196f3;
-    color: #fff;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-  
-  .sidebar ul li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .sidebar ul li span {
-    cursor: pointer;
-  }
-  
-  .remove-btn {
-    background-color: #ff4d4f;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 12px;
-  }
-  
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  min-height: calc(100vh - 70px);
+  background: var(--c-bg);
+}
+
+.no-patients {
+  text-align: center;
+  margin: auto;
+  color: var(--c-text-muted);
+}
+
+.chat-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 30%;
+  min-width: 240px;
+  border-right: 1px solid var(--c-border);
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--c-surface-alt);
+}
+.sidebar h3 {
+  margin: 0 0 var(--space-4);
+  font-size: 1.1rem;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.sidebar ul li:hover { background: var(--c-primary-50); }
+.sidebar ul li.active {
+  background: var(--c-primary-50);
+  box-shadow: inset 3px 0 0 var(--c-primary);
+  font-weight: 600;
+}
+.sidebar ul li span { cursor: pointer; flex: 1; }
+
+.remove-btn {
+  background-color: transparent;
+  color: var(--c-danger);
+  border: 1px solid var(--c-danger);
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.remove-btn:hover {
+  background: var(--c-danger);
+  color: #fff;
+}
+
+/* Chat window holds the <DoctorChat/> component (styled in DoctorChat.css) */
+.chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.no-chat-selected {
+  margin: auto;
+  text-align: center;
+  color: var(--c-text-muted);
+  padding: var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .chat-wrapper { flex-direction: column; height: auto; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--c-border); }
+}

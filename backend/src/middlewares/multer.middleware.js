@@ -1,7 +1,6 @@
 import multer from "multer";
 import { GridFsStorage } from "multer-gridfs-storage";
-import dotenv from "dotenv";
-dotenv.config();
+import { getMongoURI } from "../../config/dbConnect.js";
 
 const match = [
   "image/png",
@@ -20,10 +19,8 @@ const match = [
   "video/mp4", // MP4 videos
 ];
 
-const url = 'mongodb://localhost:27017/HealthBridge';
-
 const storage = new GridFsStorage({
-  url,
+  url: getMongoURI(),
   file: (req, file) =>
     new Promise((resolve, reject) => {
       if (!match.includes(file.mimetype)) {
@@ -32,6 +29,7 @@ const storage = new GridFsStorage({
 
       const doctorId = req.query.doctorId;  // Now accessing from body
       const patientId = req.query.patientId; // Now accessing from body
+      const description = (req.query.description || "").trim();
 
       if (!doctorId || !patientId) {
         return reject(new Error("Missing doctorId or patientId"));
@@ -44,6 +42,7 @@ const storage = new GridFsStorage({
           doctorId,
           patientId,
           originalName: file.originalname,
+          description,
         },
       };
       console.log("File metadata prepared:", fileInfo);

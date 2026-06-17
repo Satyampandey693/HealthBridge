@@ -1,1 +1,26 @@
 node_modules/
+
+# Environment & secrets — never commit these
+.env
+.env.*
+!.env.example
+config.env
+**/config/config.env
+
+# Build output
+dist/
+build/
+
+# User-uploaded files (avatars, etc.)
+uploads/
+**/uploads/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

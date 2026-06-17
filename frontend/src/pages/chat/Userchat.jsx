@@ -6,36 +6,136 @@ import "./userChat.css";
 import { toast, ToastContainer } from "react-toastify";
 import { io } from "socket.io-client";
 import { useAuth } from "../../store/auth";
+import { SOCKET_URL } from "../../config";
+import api from "../../api/client.js";
 
-const ENDPOINTS = "http://localhost:5000";
+const ENDPOINTS = SOCKET_URL;
 let socket;
 
-const DoctorInfo = ({ doctorInfo }) => (
-  <div className="uc-doctor-info">
-    <img src={"/123.png"} alt="Doctor" className="uc-doctor-photo" />
-    <div className="uc-doctor-description">
-      <h3>Dr. {doctorInfo?.name || ""}</h3>
-      <p>{doctorInfo?.specialization || ""} with {doctorInfo?.experience || ""}+ years of experience.</p>
+const DoctorInfo = ({ doctorInfo }) => {
+  const initials = doctorInfo?.name?.charAt(0)?.toUpperCase() || "D";
+  return (
+    <div className="uc-doctor-info">
+      <div className="uc-doctor-photo">
+        {doctorInfo?.profilepic ? (
+          <img src={doctorInfo.profilepic} alt={doctorInfo.name} />
+        ) : (
+          initials
+        )}
+      </div>
+      <div className="uc-doctor-description">
+        <h3>Dr. {doctorInfo?.name || ""}</h3>
+        {doctorInfo?.specialization && (
+          <span className="uc-doctor-spec">{doctorInfo.specialization}</span>
+        )}
+        <div className="uc-doctor-meta">
+          {doctorInfo?.experience != null && <span>🩺 {doctorInfo.experience}+ yrs exp</span>}
+          {doctorInfo?.city && <span>📍 {doctorInfo.city}</span>}
+          {doctorInfo?.fee != null && <span>💳 ₹{doctorInfo.fee}</span>}
+          {doctorInfo?.numOfReviews > 0 && (
+            <span>⭐ {doctorInfo.rating?.toFixed(1)} ({doctorInfo.numOfReviews})</span>
+          )}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Reviews = ({ reviews }) => {
-  const averageRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length || 0;
+  const averageRating =
+    reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length || 0;
   return (
     <div className="uc-reviews">
       <h4>Overall Rating</h4>
-      <ReactStars count={5} value={averageRating} size={24} edit={false} activeColor="#ffd700" />
-      <h4>Reviews</h4>
+      <div className="uc-rating-row">
+        {/* key forces a remount when the average changes — react-rating-stars
+            caches its initial value and otherwise won't update. */}
+        <ReactStars
+          key={`avg-${averageRating}`}
+          count={5}
+          value={averageRating}
+          size={24}
+          edit={false}
+          isHalf
+          activeColor="#ffd700"
+        />
+        <span className="uc-rating-number">
+          {averageRating ? averageRating.toFixed(1) : "—"}
+        </span>
+      </div>
+      <h4>Reviews ({reviews.length})</h4>
       <div className="uc-review-list">
+        {reviews.length === 0 && <p className="uc-no-reviews">No reviews yet. Be the first!</p>}
         {reviews.map((review, index) => (
           <div key={index} className="uc-review-item">
-            <ReactStars count={5} value={review.rating} size={20} edit={false} activeColor="#ffd700" />
-            <p>{review.text}</p>
+            {review.name && <strong className="uc-review-name">{review.name}</strong>}
+            <ReactStars
+              key={`r-${index}-${review.rating}`}
+              count={5}
+              value={review.rating}
+              size={18}
+              edit={false}
+              activeColor="#ffd700"
+            />
+            <p>{review.comment || review.text}</p>
           </div>
         ))}
       </div>
     </div>
+  );
+};
+
+// Lets a patient who has consulted submit / update their star rating + comment.
+const ReviewForm = ({ doctorId, onReviewed }) => {
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [formKey, setFormKey] = useState(0); // bump to reset the star picker
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!rating) {
+      toast.error("Please select a star rating");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await api.post(`/api/doctor/${doctorId}/review`, { rating, comment });
+      toast.success("Thanks for your review!");
+      setComment("");
+      setRating(0);
+      setFormKey((k) => k + 1);
+      onReviewed?.();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Could not submit review");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form className="uc-review-form" onSubmit={submit}>
+      <h4>Rate your doctor</h4>
+      <ReactStars
+        key={formKey}
+        count={5}
+        value={rating}
+        size={28}
+        edit={true}
+        activeColor="#ffd700"
+        onChange={setRating}
+      />
+      <textarea
+        className="uc-review-textarea"
+        placeholder="Share your experience (optional)"
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        rows={3}
+      />
+      <button type="submit" className="hb-btn hb-btn-primary" disabled={submitting}>
+        {submitting ? "Submitting..." : "Submit Review"}
+      </button>
+    </form>
   );
 };
 
@@ -82,11 +182,15 @@ const SlotSelection = ({ slots, onBookSlot }) => {
 
 const Chat = ({ messages, onSend, doctorInfo }) => {
   const [input, setInput] = useState("");
-  const chatEndRef = useRef(null);
+  const chatWindowRef = useRef(null);
   const userId = localStorage.getItem("userID");
 
+  // Scroll the chat box itself, not the whole page.
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = chatWindowRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages]);
 
   const handleSend = () => {
@@ -99,7 +203,7 @@ const Chat = ({ messages, onSend, doctorInfo }) => {
   return (
     <div className="uc-chat-section uc-chat-full">
       <h3>Chat with Dr. {doctorInfo?.name}</h3>
-      <div className="uc-chat-window">
+      <div className="uc-chat-window" ref={chatWindowRef}>
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -110,7 +214,6 @@ const Chat = ({ messages, onSend, doctorInfo }) => {
             </div>
           </div>
         ))}
-        <div ref={chatEndRef} />
       </div>
       <input
         type="text"
@@ -164,7 +267,7 @@ export const UserChat = () => {
     const id = queryParams.get("id");
     const fetchDoctorInfo = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/doctor/${id}`, {
+        const { data } = await axios.get(`/api/doctor/${id}`, {
           headers: { Authorization: authorizationToken },
         });
         setDoctorInfo(data);
@@ -180,10 +283,23 @@ export const UserChat = () => {
     if (id) fetchDoctorInfo();
   }, [location.search, authorizationToken]);
 
+  // Re-pull the doctor (and its reviews) after the patient submits a review.
+  const refreshReviews = async () => {
+    const docId = doctorIdRef.current;
+    if (!docId) return;
+    try {
+      const { data } = await api.get(`/api/doctor/${docId}`);
+      setReviews(data.reviews || []);
+      setDoctorInfo(data);
+    } catch (err) {
+      console.error("Failed to refresh reviews:", err);
+    }
+  };
+
   const checkPaymentStatus = async (doctorId) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/payment/status",
+        "/api/payment/status",
         { userId, doctorId },
         {
           headers: { Authorization: authorizationToken },
@@ -248,9 +364,13 @@ const loadRazorpayScript = () => {
 };
   const CheckoutHandler = async (slot) => {
     try {
-      const { data: { key: razorKey } } = await axios.get("http://localhost:5000/api/getkey");
-      const { data: { order } } = await axios.post("http://localhost:5000/api/payment/checkout", { amount: doctorInfo.fee });
       const doctorId = doctorIdRef.current;
+      const { data: { key: razorKey } } = await axios.get("/api/getkey");
+      const { data: { order } } = await axios.post(
+        "/api/payment/checkout",
+        { doctorId },
+        { headers: { Authorization: authorizationToken }, withCredentials: true }
+      );
       console.log(order);
       console.log(razorKey)
       const options = {
@@ -263,11 +383,12 @@ const loadRazorpayScript = () => {
         handler: async function (response) {
           try {
             const verification = await axios.post(
-              "http://localhost:5000/api/payment/verification",
+              "/api/payment/verification",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
+                doctorId,
               },
               {
                 headers: {
@@ -280,7 +401,7 @@ const loadRazorpayScript = () => {
             if (verification.data.success) {
               // 1. Store payment info
               await axios.post(
-                "http://localhost:5000/api/payment/store",
+                "/api/payment/store",
                 { userId, doctorId, slot },
                 {
                   headers: {
@@ -292,7 +413,7 @@ const loadRazorpayScript = () => {
               console.log("hello man");
               // 2. Update slot to isBooked = true
               await axios.put(
-                "http://localhost:5000/api/doctor/slot/update",
+                "/api/doctor/slot/update",
                 {
                   doctorId,
                   slotId: slot._id,
@@ -397,6 +518,9 @@ const loadRazorpayScript = () => {
         </div>
         <div className="uc-lower-left">
           <Reviews reviews={reviews} />
+          {paid && (
+            <ReviewForm doctorId={doctorIdRef.current} onReviewed={refreshReviews} />
+          )}
         </div>
       </div>
       <div className="uc-right-section">

@@ -15,9 +15,12 @@ import {
   addSlotToDoctor,
   getDoctorDetails,
   updateSlotStatusById,
-  getAllSlots
+  getAllSlots,
+  createDoctorReview,
+  uploadDoctorAvatar
 } from "../controllers/docController.js";
 import { isAuthenticatedUser,authorizeRoles } from "../middlewares/auth.js";
+import { avatarUpload } from "../middlewares/avatarUpload.middleware.js";
 const router = express.Router();
 
 router.route("/signup").post(registerUser);
@@ -29,6 +32,7 @@ router.route("/logout").get(logout);
 
 router.route("/me").get(isAuthenticatedUser, getUserProfile);
 router.route("/me/update").put(isAuthenticatedUser, updateProfile);
+router.route("/me/avatar").put(isAuthenticatedUser, authorizeRoles("doctor"), avatarUpload.single("avatar"), uploadDoctorAvatar);
 // router.route("/password/update").put(isAuthenticatedUser, updatePassword);
 // router.route("/me/upload_avatar").put(isAuthenticatedUser, uploadAvatar);
 
@@ -49,6 +53,7 @@ router.route('/remove-notification').post(isAuthenticatedUser,authorizeRoles("do
 router.route('/:doctorId/remove-patient').put(isAuthenticatedUser,authorizeRoles("doctor","admin"),removePatientFromDoctor);
 router.route('/add').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),insertAny);
 router.route('/add/:doctorId').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),addSlotToDoctor);
+router.route('/:doctorId/review').post(isAuthenticatedUser,authorizeRoles("patient"),createDoctorReview);
 router.route('/:doctorId').get(isAuthenticatedUser,authorizeRoles("patient","admin"),getDoctorDetails);
 router.route('/slot/update').put(isAuthenticatedUser,authorizeRoles("admin","doctor","patient"),updateSlotStatusById);
 router.route("/slots/:userID").get(isAuthenticatedUser,getAllSlots);

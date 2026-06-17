@@ -1,27 +1,64 @@
+.upload-wrapper {
+  padding: var(--space-12) var(--space-6) var(--space-16);
+  display: flex;
+  justify-content: center;
+}
+
+.upload-card {
+  width: 100%;
+  max-width: 520px;
+  padding: var(--space-12) var(--space-8);
+}
+
+.upload-card__head {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+.upload-card__icon {
+  font-size: 2.4rem;
+  color: var(--c-primary);
+  margin-bottom: var(--space-2);
+}
+.upload-card__head h2 {
+  margin: 0 0 var(--space-1);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.upload-card__head p {
+  margin: 0;
+  color: var(--c-text-muted);
+}
+
 .upload-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
-  }
-  
-  .upload-form input[type="text"],
-  .upload-form input[type="file"] {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-  
-  .upload-form button {
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .upload-form button:hover {
-    background-color: #0056b3;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.upload-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--c-text);
+}
+.upload-form select,
+.upload-form input[type="text"],
+.upload-form input[type="file"] {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  background: var(--c-bg);
+}
+.upload-form select:focus,
+.upload-form input[type="text"]:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+.upload-form .hb-btn {
+  margin-top: var(--space-2);
+}

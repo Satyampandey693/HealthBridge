@@ -3,9 +3,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import { useAuth } from "../../store/auth";
+import { SOCKET_URL } from "../../config";
 import "./DoctorChat.css";
 
-const ENDPOINTS = "http://localhost:5000";
+const ENDPOINTS = SOCKET_URL;
 
 // We accept props from MyPatients.jsx
 export const DoctorChat = ({ activePatientId, activeChatId,activePatientName }) => {
@@ -16,6 +17,7 @@ export const DoctorChat = ({ activePatientId, activeChatId,activePatientName }) 
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   
   // Use a ref for the socket to avoid re-initializing on every render
   const socket = useRef(null);
@@ -59,9 +61,12 @@ export const DoctorChat = ({ activePatientId, activeChatId,activePatientName }) 
     }
   }, [activeChatId]);
 
-  // 4. Auto-scroll to bottom
+  // 4. Auto-scroll the chat box (not the whole page) to the latest message.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages]);
 
   const fetchMessages = async (chatId) => {
@@ -106,7 +111,7 @@ export const DoctorChat = ({ activePatientId, activeChatId,activePatientName }) 
         <h3>Chatting with {activePatientName}</h3>
       </div>
 
-      <div className="chat-messages">
+      <div className="chat-messages" ref={messagesContainerRef}>
         {messages.map((msg, index) => (
           <div
             key={index}

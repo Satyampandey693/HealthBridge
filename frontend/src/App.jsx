@@ -26,6 +26,7 @@ import { Medicines } from "./pages/Medicines";
 
 import {LabPage }from "./pages/Lab/LabPage";
 import {LabCategories} from "./pages/Lab/LabCategories";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 function App() {
   const router=createBrowserRouter([
     {
@@ -63,11 +64,11 @@ function App() {
         },
         {
           path:"/reports",
-          element:<ReportList/>,
+          element:<ProtectedRoute allowedRoles={["patient","doctor"]}><ReportList/></ProtectedRoute>,
         },
         {
           path:"/upload",
-          element:<UploadForm/>,
+          element:<ProtectedRoute allowedRoles={["patient","doctor"]}><UploadForm/></ProtectedRoute>,
         },
         {
           path:"/userlogin",
@@ -79,11 +80,11 @@ function App() {
         },
         {
           path:"/patients",
-          element:<MyPatients/>
+          element:<ProtectedRoute allowedRoles={["doctor"]}><MyPatients/></ProtectedRoute>
         },
         {
           path:"/admin",
-          element:<AdminPanel/>
+          element:<ProtectedRoute allowedRoles={["admin"]}><AdminPanel/></ProtectedRoute>
         },
         {
           path:"/logout",
@@ -91,7 +92,7 @@ function App() {
         },
         {
           path:"/slots",
-          element:<DoctorSlotManager/>
+          element:<ProtectedRoute allowedRoles={["doctor"]}><DoctorSlotManager/></ProtectedRoute>
         }
         ,
         {
@@ -104,11 +105,11 @@ function App() {
         },
         {
           path:"/user/profile",
-          element:<UserProfile/>
+          element:<ProtectedRoute allowedRoles={["patient"]}><UserProfile/></ProtectedRoute>
         },
         {
           path:"/doctor/profile",
-          element:<DoctorProfile/>
+          element:<ProtectedRoute allowedRoles={["doctor"]}><DoctorProfile/></ProtectedRoute>
         },
          {
           path:"/lab-tests",

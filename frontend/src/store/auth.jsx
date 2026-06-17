@@ -1,43 +1,52 @@
-import { createContext, useContext,useState } from "react";
+import { createContext, useContext, useState, useMemo, useCallback } from "react";
 
-export const AuthContext=createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(localStorage.getItem("token"));
-    const [userID, setUserID] = useState(localStorage.getItem("userID"));
-    const [role, setRole] = useState(localStorage.getItem("role"));
-    const authorizationToken=`Bearer ${token}`;
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [userID, setUserID] = useState(() => localStorage.getItem("userID"));
+  const [role, setRole] = useState(() => localStorage.getItem("role"));
 
-    const storeTokenInLS=(serverToken,userId,role)=>{
-         localStorage.setItem("token",serverToken);
-         localStorage.setItem("userID",userId);
-         localStorage.setItem("role",role);
-         setToken(serverToken);
-         setUserID(userId);
-         setRole(role);
-         return;
-    };
-    let isLoggedIn=!!token;
+  const storeTokenInLS = useCallback((serverToken, userId, userRole) => {
+    localStorage.setItem("token", serverToken);
+    localStorage.setItem("userID", userId);
+    localStorage.setItem("role", userRole);
+    setToken(serverToken);
+    setUserID(userId);
+    setRole(userRole);
+  }, []);
 
-    const LogoutUser=()=>{
-        setToken("");
-        setUserID("");
-        setRole("");
-        localStorage.removeItem("token");
-        localStorage.removeItem("userID");
-        localStorage.removeItem("role");
-    }
+  const LogoutUser = useCallback(() => {
+    setToken(null);
+    setUserID(null);
+    setRole(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("userID");
+    localStorage.removeItem("role");
+  }, []);
 
-    return (<AuthContext.Provider value={{isLoggedIn,storeTokenInLS,LogoutUser,authorizationToken}}> 
-    {children} 
-    </AuthContext.Provider>
-    );
+  const value = useMemo(
+    () => ({
+      token,
+      userID,
+      role,
+      user: token ? { userID, role } : null,
+      isLoggedIn: !!token,
+      authorizationToken: token ? `Bearer ${token}` : "",
+      storeTokenInLS,
+      LogoutUser,
+      logout: LogoutUser, // alias
+    }),
+    [token, userID, role, storeTokenInLS, LogoutUser]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth=()=>{
-    const authContextValue=useContext(AuthContext);
-    if(!authContextValue){
-        throw new Error("useAuth must be used within AuthProvider");
-    }
-    return authContextValue;
-}
+export const useAuth = () => {
+  const authContextValue = useContext(AuthContext);
+  if (!authContextValue) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+  return authContextValue;
+};

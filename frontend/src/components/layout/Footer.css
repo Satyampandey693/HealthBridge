@@ -1,38 +1,32 @@
-/* Footer Styles */
+/* ===================== Footer ===================== */
 .footer {
-  background-color: #1e1e1e; /* Dark Grey */
-  color: white;
-  padding: 15px 20px;
+  background: #0f172a;
+  color: #cbd5e1;
+  padding: var(--space-8) var(--space-4);
   text-align: center;
   width: 100%;
-  position: relative;
-  bottom: 0;
+  margin-top: auto;
 }
 
-/* Footer Content */
 .footer-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  font-size: 16px;
+  gap: var(--space-2);
+  font-size: 0.95rem;
 }
 
-/* Website Name */
 .website-name {
-  font-size: 20px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  color: #ffcc00; /* Highlighted Text */
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Push footer down when content is short */
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures page takes full height */
-}
-
-.main-content {
-  flex: 1; /* Pushes footer down */
+.copyright {
+  color: #94a3b8;
+  font-size: 0.85rem;
 }

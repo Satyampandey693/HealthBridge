@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate,NavLink } from "react-router-dom";
-import { loginUser } from "../../Api/userApi.js";
 import { Toaster, toast } from "react-hot-toast";
 import "./userLogin.css"
 import { useAuth } from "../../store/auth.jsx";
+import api from "../../api/client.js";
 
 export const LoginUser= () =>{
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -18,25 +18,15 @@ export const LoginUser= () =>{
     e.preventDefault();
     setLoading(true);
     try {
-        const response = await fetch("/api/loginUser", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-        });
-        const data = await response.json();
-        console.log(data);
-        if (response.ok) {
-            storeTokenInLS(data.token,data.userId,"patient");
-            toast.success("Login successful!");
-            navigate("/doctors");
-        } else {
-            alert(`Error: ${data.message}`);
-        }
-        console.log("h");
+      const { data } = await api.post("/api/loginUser", formData);
+      storeTokenInLS(data.token, data.userId, "patient");
+      toast.success("Login successful!");
+      navigate("/doctors");
     } catch (error) {
-      toast.error(error);
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

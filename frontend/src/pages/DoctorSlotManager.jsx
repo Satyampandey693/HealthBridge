@@ -12,7 +12,7 @@ export const DoctorSlotManager = () => {
 
   const fetchSlots = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/doctor/slots/${userID}`, {
+      const res = await axios.get(`/api/doctor/slots/${userID}`, {
         headers: {
           Authorization: authorizationToken,
         },
@@ -27,7 +27,7 @@ export const DoctorSlotManager = () => {
     if (!from || !to) return alert("Please enter both from and to times.");
     try {
       await axios.post(
-        `http://localhost:5000/api/doctor/add/${userID}`,
+        `/api/doctor/add/${userID}`,
         { from, to },
         {
           headers: {
@@ -46,7 +46,7 @@ export const DoctorSlotManager = () => {
   const toggleBooking = async (slotId, currentStatus) => {
     try {
       await axios.put(
-        "http://localhost:5000/api/doctor/slot/update",
+        "/api/doctor/slot/update",
         {
           doctorId: userID,
           slotId,

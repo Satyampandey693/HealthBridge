@@ -71,9 +71,25 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   // Get current user profile  =>  /api/me
 export const getUserProfile = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findById(req?.user?._id);
-  
+
     res.status(200).json({
       user,
     });
   });
+
+  // Upload / change profile picture  =>  /api/me/avatar
+export const uploadUserAvatar = catchAsyncErrors(async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No image uploaded" });
+  }
+
+  const url = `${process.env.BACKEND_URL}/uploads/avatars/${req.file.filename}`;
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { profilePicture: url },
+    { new: true }
+  );
+
+  res.status(200).json({ message: "Profile picture updated", profilePicture: url, user });
+});
   

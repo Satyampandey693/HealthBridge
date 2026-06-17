@@ -172,6 +172,22 @@ export const getUserProfile = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Upload / change profile picture  =>  /api/doctor/me/avatar
+export const uploadDoctorAvatar = catchAsyncErrors(async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No image uploaded" });
+  }
+
+  const url = `${process.env.BACKEND_URL}/uploads/avatars/${req.file.filename}`;
+  const user = await Doctor.findByIdAndUpdate(
+    req.user._id,
+    { profilepic: url },
+    { new: true }
+  ).select("-password -refreshToken");
+
+  res.status(200).json({ message: "Profile picture updated", profilepic: url, user });
+});
+
 // Update Password  =>  /api/v1/password/update
 /*export const updatePassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req?.user?._id).select("+password");
@@ -315,11 +331,10 @@ export const removeDoctorNotification = async (req, res) => {
       return res.status(404).json({ message: 'Doctor or patient not found' });
     }
 
-    // Filter out the notification
+    // Filter out the notification. patientId is an ObjectId, so compare via
+    // .equals() / String() — a raw !== against the string never matches.
     doctor.notifications = doctor.notifications.filter(
-      (notification) =>
-        notification.patientId !== patientId &&
-        notification.name !== user.name
+      (notification) => String(notification.patientId) !== String(patientId)
     );
 
     await doctor.save();
@@ -404,7 +419,7 @@ export const addSlotToDoctor = async (req, res) => {
     const newSlot = {
       from,
       to,
-      booked: false
+      isBooked: false, // schema field is `isBooked`, not `booked`
     };
 
     doctor.slots.push(newSlot);
@@ -434,6 +449,65 @@ export const getDoctorDetails = async (req, res) => {
   } catch (error) {
     console.error('Error fetching doctor details:', error);
     res.status(500).json({ message: 'Server error while fetching doctor details' });
+  }
+};
+
+// Create or update the logged-in patient's review for a doctor.
+// Only patients who have actually consulted (a Payment record exists) may review.
+export const createDoctorReview = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const { rating, comment } = req.body;
+
+    const numericRating = Number(rating);
+    if (!numericRating || numericRating < 1 || numericRating > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 and 5" });
+    }
+
+    const hasConsulted = await Payment.findOne({ userId: req.user._id, doctorId });
+    if (!hasConsulted) {
+      return res
+        .status(403)
+        .json({ message: "You can only review a doctor you have consulted" });
+    }
+
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    const existing = doctor.reviews.find(
+      (r) => r.user.toString() === req.user._id.toString()
+    );
+
+    if (existing) {
+      existing.rating = numericRating;
+      existing.comment = comment;
+      existing.createdAt = new Date();
+    } else {
+      doctor.reviews.push({
+        user: req.user._id,
+        name: req.user.name,
+        rating: numericRating,
+        comment,
+      });
+    }
+
+    doctor.numOfReviews = doctor.reviews.length;
+    doctor.rating =
+      doctor.reviews.reduce((acc, r) => acc + r.rating, 0) / doctor.reviews.length;
+
+    await doctor.save();
+
+    res.status(200).json({
+      message: "Review submitted",
+      rating: doctor.rating,
+      numOfReviews: doctor.numOfReviews,
+      reviews: doctor.reviews,
+    });
+  } catch (error) {
+    console.error("Error creating review:", error);
+    res.status(500).json({ message: "Server error while submitting review" });
   }
 };
 
@@ -484,8 +558,9 @@ export const getAllSlots = async (req, res) => {
       return res.status(404).json({ message: "No slots found for this doctor." });
     }
 
-    // Sort the slots by 'from' time
-    const sortedSlots = doctor.slots.sort((a, b) => new Date(a.from) - new Date(b.from));
+    // Slots store "HH:mm" strings; new Date("09:00") is NaN, so sort the
+    // strings directly (lexicographic order matches chronological for HH:mm).
+    const sortedSlots = [...doctor.slots].sort((a, b) => a.from.localeCompare(b.from));
 
     return res.status(200).json({ slots: sortedSlots });
   } catch (err) {

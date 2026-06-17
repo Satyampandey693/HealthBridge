@@ -3,71 +3,89 @@ import "./Header.css";
 import NotificationDropdown from "../../pages/NotificationDropdown";
 import { useEffect, useState } from "react";
 import { FaBell } from "react-icons/fa";
-import axios from "axios";
+import api from "../../api/client.js";
 import { useAuth } from "../../store/auth";
 
+const PLACEHOLDER = {
+  doctor: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png",
+  patient: "https://cdn-icons-png.flaticon.com/512/847/847969.png",
+  default: "https://cdn-icons-png.flaticon.com/512/3177/3177440.png",
+};
+
 export const Header = () => {
-  const {authorizationToken} = useAuth();
-  const role = localStorage.getItem("role");
-  const doctorId = localStorage.getItem("userID");
+  const { role, userID: doctorId } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [avatar, setAvatar] = useState(null);
 
-
-  const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const toggleDropdown = () => setShowDropdown((s) => !s);
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/doctor/notifications/${doctorId}`,{ headers: {
-            Authorization: authorizationToken,
-          },
-          withCredentials: true,});
+      const res = await api.get(`/api/doctor/notifications/${doctorId}`);
       setNotifications(res.data.notifications);
     } catch (err) {
       console.error("Error fetching notifications", err);
     }
   };
-const renderAuthButtons = () => {
-  switch (role) {
-    case "doctor":
-      return (
-        <>
-          <Link to="/doctor/profile" className="profile-icon">
-            <img src={avatarURL} alt="Profile" className="avatar" />
-          </Link>
-          <Link to="/logout" className="auth-btn">Logout</Link>
-        </>
-      );
-    case "patient": // Assuming a logged-in user
-      return (
-        <>
-          <Link to="/user/profile" className="profile-icon">
-             <img src={avatarURL} alt="Profile" className="avatar" />
-          </Link>
-          <Link to="/logout" className="auth-btn">Logout</Link>
-        </>
-      );
-    default: // Not logged in
-      return (
-        <>
-          <Link to="/login" className="auth-btn">Login</Link>
-          <Link to="/signup" className="auth-btn">Signup</Link>
-        </>
-      );
-  }
-};
-  useEffect(() => {
-    if (role === "doctor") {
-      fetchNotifications();
+
+  // Pull the logged-in user's uploaded profile photo for the navbar.
+  const fetchAvatar = async () => {
+    try {
+      if (role === "patient") {
+        const { data } = await api.get("/api/me");
+        setAvatar(data.user?.profilePicture || null);
+      } else if (role === "doctor") {
+        const { data } = await api.get("/api/doctor/me");
+        setAvatar(data.user?.profilepic || null);
+      }
+    } catch {
+      setAvatar(null);
     }
+  };
+
+  useEffect(() => {
+    if (role === "doctor") fetchNotifications();
+    if (role === "doctor" || role === "patient") fetchAvatar();
+
+    // Update the navbar photo immediately after an upload on the profile page.
+    const onAvatarUpdated = () => fetchAvatar();
+    window.addEventListener("avatar-updated", onAvatarUpdated);
+    return () => window.removeEventListener("avatar-updated", onAvatarUpdated);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [role]);
 
-  const avatarURL =
-    role === "doctor"
-      ? "https://cdn-icons-png.flaticon.com/512/3774/3774299.png"
-      : role === "patient"
-      ? "https://cdn-icons-png.flaticon.com/512/847/847969.png"
-      : "https://cdn-icons-png.flaticon.com/512/3177/3177440.png"; // Generic for lab or default
+  const avatarSrc = avatar || PLACEHOLDER[role] || PLACEHOLDER.default;
+
+  const renderAuthButtons = () => {
+    switch (role) {
+      case "doctor":
+        return (
+          <>
+            <Link to="/doctor/profile" className="profile-icon">
+              <img src={avatarSrc} alt="Profile" className="avatar" />
+            </Link>
+            <Link to="/logout" className="auth-btn">Logout</Link>
+          </>
+        );
+      case "patient":
+        return (
+          <>
+            <Link to="/user/profile" className="profile-icon">
+              <img src={avatarSrc} alt="Profile" className="avatar" />
+            </Link>
+            <Link to="/logout" className="auth-btn">Logout</Link>
+          </>
+        );
+      default:
+        return (
+          <>
+            <Link to="/login" className="auth-btn">Login</Link>
+            <Link to="/signup" className="auth-btn">Signup</Link>
+          </>
+        );
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -90,6 +108,7 @@ const renderAuthButtons = () => {
               <>
                 <li><Link to="/patients">Patients</Link></li>
                 <li><Link to="/slots">Slots</Link></li>
+                <li><Link to="/upload">Upload Report</Link></li>
               </>
             )}
           </ul>
@@ -114,7 +133,7 @@ const renderAuthButtons = () => {
           </div>
         )}
 
-    {renderAuthButtons()}
+        {renderAuthButtons()}
       </div>
     </nav>
   );

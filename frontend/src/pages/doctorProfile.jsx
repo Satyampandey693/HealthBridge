@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "./doctorProfile.css";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { FaCamera } from "react-icons/fa";
+import api from "../api/client.js";
+import { Loader } from "../components/Loader.jsx";
+import "./Profile.css";
 
 export const DoctorProfile = () => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchDoctorData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const { data } = await axios.get("http://localhost:5000/api/doctor/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const { data } = await api.get("/api/doctor/me");
         setDoctor(data.user);
       } catch (err) {
         setError(err.response?.data?.message || "Error accessing practitioner data.");
@@ -24,40 +25,83 @@ export const DoctorProfile = () => {
     fetchDoctorData();
   }, []);
 
-  if (loading) return <div className="profile-status">Syncing medical records...</div>;
+  const handleAvatar = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append("avatar", file);
+    setUploading(true);
+    try {
+      const { data } = await api.put("/api/doctor/me/avatar", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setDoctor((d) => ({ ...d, profilepic: data.profilepic }));
+      window.dispatchEvent(new Event("avatar-updated"));
+      toast.success("Profile picture updated");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  if (loading) return <Loader />;
   if (error) return <div className="error-msg">{error}</div>;
 
+  const initials = doctor?.name?.charAt(0)?.toUpperCase() || "?";
+
   return (
-    <div className="profile-wrapper doctor-portal">
-      <header className="profile-header doctor-brand">
-        <div className="header-text">
-          <h1 className="main-title">Practitioner Dashboard</h1>
-          <p className="subtitle">Verified Medical Professional</p>
+    <div className="profile-page hb-container">
+      <div className="profile-card hb-card">
+        <div className="profile-banner profile-banner--doctor">
+          <div className="profile-avatar">
+            {doctor?.profilepic ? (
+              <img src={doctor.profilepic} alt={doctor.name} />
+            ) : (
+              initials
+            )}
+            <label className="profile-avatar__edit" title="Change photo">
+              <FaCamera />
+              <input type="file" accept="image/*" hidden onChange={handleAvatar} disabled={uploading} />
+            </label>
+          </div>
         </div>
-        <div className="exp-badge">
-          <span className="exp-number">{doctor?.experience}+</span>
-          <span className="exp-text">Years Exp.</span>
-        </div>
-      </header>
+        <div className="profile-body">
+          <h1 className="profile-name">Dr. {doctor?.name}</h1>
+          <span className="profile-role-badge">{doctor?.specialization || "Doctor"}</span>
 
-      <section className="profile-content">
-        <h2 className="section-label">Professional Identity</h2>
-        <div className="details-list">
-          <div className="detail-row">
-            <span className="attribute">Doctor Name</span>
-            <span className="value">Dr. {doctor?.name}</span>
-          </div>
-          <div className="detail-row">
-            <span className="attribute">Official Email</span>
-            <span className="value">{doctor?.email}</span>
-          </div>
-          <div className="detail-row">
-            <span className="attribute">Contact Number</span>
-            <span className="value">{doctor?.phone_no}</span>
+          <div className="profile-details">
+            <div className="profile-field">
+              <span>Email</span>
+              <strong>{doctor?.email}</strong>
+            </div>
+            <div className="profile-field">
+              <span>Phone</span>
+              <strong>{doctor?.phone_no || "—"}</strong>
+            </div>
+            <div className="profile-field">
+              <span>Experience</span>
+              <strong>{doctor?.experience != null ? `${doctor.experience} years` : "—"}</strong>
+            </div>
+            <div className="profile-field">
+              <span>City</span>
+              <strong>{doctor?.city || "—"}</strong>
+            </div>
+            <div className="profile-field">
+              <span>Consultation Fee</span>
+              <strong>{doctor?.fee != null ? `₹${doctor.fee}` : "—"}</strong>
+            </div>
+            <div className="profile-field">
+              <span>Rating</span>
+              <strong>
+                {doctor?.numOfReviews
+                  ? `${doctor.rating?.toFixed(1)}★ (${doctor.numOfReviews})`
+                  : "No reviews yet"}
+              </strong>
+            </div>
           </div>
         </div>
-      </section>
-
+      </div>
     </div>
   );
 };

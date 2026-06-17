@@ -1,73 +1,82 @@
+/* ===================== Auth — Login ===================== */
 .userLogin-container {
+  min-height: calc(100vh - 70px);
   display: flex;
-  height: 100vh;
-  width: 100vw;
-  justify-content: center;
   align-items: center;
-  background: linear-gradient(to right, #4f46e5, #9333ea);
-  padding: 16px;
-  box-sizing: border-box;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  background: var(--grad-hero);
 }
 
 .userLogin-box {
-  background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 16px;
-  padding: 32px;
-  max-width: 400px;
   width: 100%;
+  max-width: 420px;
+  background: var(--c-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-12) var(--space-8);
 }
 
 .userLogin-title {
   text-align: center;
-  font-size: 24px;
+  font-size: 1.8rem;
   font-weight: 800;
-  color: #111827;
-  margin-bottom: 24px;
+  margin: 0 0 var(--space-8);
+  color: var(--c-text);
 }
 
 .userLogin-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .userLogin-input-field {
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 16px;
   width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--c-bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.userLogin-input-field:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+  background: var(--c-surface);
 }
 
 .userLogin-button {
-  padding: 12px;
-  background: #2563eb;
-  color: white;
-  font-size: 16px;
+  margin-top: var(--space-2);
+  padding: 0.8rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-full);
+  background: var(--grad-brand);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  box-shadow: var(--shadow-brand);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
 }
-
-.userLogin-button:hover {
-  background: #1e40af;
+.userLogin-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.userLogin-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .userLogin-footer {
   text-align: center;
-  font-size: 14px;
-  color: #6b7280;
+  margin-top: var(--space-6);
+  color: var(--c-text-muted);
+  font-size: 0.95rem;
 }
-
 .userLogin-link {
-  color: #2563eb;
-  text-decoration: none;
+  color: var(--c-primary-dark);
   font-weight: 600;
 }
-
-.userLogin-link:hover {
-  text-decoration: underline;
-}
-

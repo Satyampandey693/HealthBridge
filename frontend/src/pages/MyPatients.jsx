@@ -13,7 +13,7 @@ export const MyPatients = () => {
   // Fetch the list of patients associated with this doctor
   const fetchPatients = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/doctor/${doctorId}/patients`, {
+      const res = await axios.get(`/api/doctor/${doctorId}/patients`, {
         headers: {
           Authorization: authorizationToken,
         },
@@ -35,7 +35,7 @@ export const MyPatients = () => {
     if (!window.confirm("Are you sure you want to remove this patient?")) return;
     
     try {
-      const res = await axios.put(`http://localhost:5000/api/doctor/${doctorId}/remove-patient`, 
+      const res = await axios.put(`/api/doctor/${doctorId}/remove-patient`, 
         { patientId },
         { 
           headers: { Authorization: authorizationToken },

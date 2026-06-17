@@ -8,7 +8,6 @@ import jwt from "jsonwebtoken";
 export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   const authHeader = req.header("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    console.log("dikkat yaha h")
     return res.status(401).json({ message: "No or invalid token provided." });
   }
 

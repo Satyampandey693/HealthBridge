@@ -1,5 +1,6 @@
 import express from 'express';
 import upload from '../middlewares/multer.middleware.js';
+import { isAuthenticatedUser } from '../middlewares/auth.js';
 import {
   uploadReport,
   getReportsByPatient,
@@ -8,8 +9,9 @@ import {
 
 const router = express.Router();
 
-router.post('/upload', upload.single('report'), uploadReport);
-router.get('/patient/:id', getReportsByPatient);
-router.get('/download/:filename', downloadReport);
+// Medical reports are sensitive — every route requires a valid session.
+router.post('/upload', isAuthenticatedUser, upload.single('report'), uploadReport);
+router.get('/patient/:id', isAuthenticatedUser, getReportsByPatient);
+router.get('/download/:filename', isAuthenticatedUser, downloadReport);
 
 export default router;

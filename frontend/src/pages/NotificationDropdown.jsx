@@ -1,31 +1,21 @@
 import PropTypes from "prop-types";
 import "./NotificationDropdown.css";
-import axios from "axios";
+import api from "../api/client.js";
 import { useAuth } from "../store/auth";
 
 const NotificationDropdown = ({ notifications, fetchNotifications }) => {
-  const doctorId = localStorage.getItem("userID");
+  const { userID: doctorId } = useAuth();
 
- const {authorizationToken}=useAuth();
   const handleAccept = async (patient) => {
     try {
-      await axios.post("http://localhost:5000/api/doctor/add-patient", {
+      await api.post("/api/doctor/add-patient", {
         doctorId,
         patientId: patient.patientId,
-        // patientName: patient.name,
-      },{ headers: {
-            Authorization: authorizationToken,
-          },
-          withCredentials: true,});
-      await axios.post("http://localhost:5000/api/doctor/remove-notification", {
+      });
+      await api.post("/api/doctor/remove-notification", {
         doctorId,
         patientId: patient.patientId,
-        
-      },{ headers: {
-            Authorization: authorizationToken,
-          },
-          withCredentials: true,});
-
+      });
       fetchNotifications();
     } catch (err) {
       console.error("Error adding patient:", err);
@@ -34,43 +24,55 @@ const NotificationDropdown = ({ notifications, fetchNotifications }) => {
 
   const handleDecline = async (patient) => {
     try {
-      await axios.post("http://localhost:5000/api/doctor/remove-notification", {
+      await api.post("/api/doctor/remove-notification", {
         doctorId,
         patientId: patient.patientId,
-      },{ headers: {
-            Authorization: authorizationToken,
-          },
-          withCredentials: true,});
-      
+      });
       fetchNotifications();
     } catch (err) {
-      console.error("Error adding patient:", err);
+      console.error("Error declining patient:", err);
     }
   };
 
   return (
     <div className="notification-dropdown">
-      {notifications&&notifications.map((patient, index) => (
-        <div key={index} className="notification-item">
-          <span>{patient.name}</span>
-          <div className="actions">
-            <button onClick={() => handleAccept(patient)}>Approve</button>
-          </div>
+      <div className="notification-dropdown__head">Patient Requests</div>
+
+      {!notifications || notifications.length === 0 ? (
+        <div className="notification-empty">
+          <span role="img" aria-label="bell">🔔</span>
+          <p>No new requests</p>
         </div>
-      ))}
+      ) : (
+        notifications.map((patient, index) => (
+          <div key={index} className="notification-item">
+            <div className="notification-item__avatar">
+              {patient.name?.charAt(0)?.toUpperCase() || "?"}
+            </div>
+            <span className="notification-item__name">{patient.name}</span>
+            <div className="actions">
+              <button className="btn-approve" onClick={() => handleAccept(patient)}>
+                Approve
+              </button>
+              <button className="btn-decline" onClick={() => handleDecline(patient)}>
+                Decline
+              </button>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
 
-// ✅ Add PropTypes
 NotificationDropdown.propTypes = {
   notifications: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
+      patientId: PropTypes.string,
+      name: PropTypes.string,
     })
-  ).isRequired,
-  fetchPatients: PropTypes.func.isRequired,
+  ),
+  fetchNotifications: PropTypes.func.isRequired,
 };
 
 export default NotificationDropdown;
