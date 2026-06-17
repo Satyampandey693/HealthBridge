@@ -226,15 +226,12 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
 export const addPatientToDoctor = async (req, res) => {
 
   const { doctorId, patientId} = req.body;
-  console.log(req.body);
   try {
     const user=await User.findById(patientId);
-    console.log(user.name);
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) return res.status(404).json({ message: "Doctor not found" });
 
     // Check if patient already exists
-    console.log("ya");
     // const exists = doctor.patients.find(p => p.patientId === patientId);
     // if (exists) return res.status(400).json({ message: "Patient already added" });
 
@@ -294,7 +291,6 @@ export const getDoctorNotifications = async (req, res) => {
 export const addDoctorNotification = async (req, res) => {
   const { doctorId } = req.params;
   const { patientId } = req.body;
-  console.log("yes i am here",doctorId,patientId);
 
   try {
     const doctor = await Doctor.findById(doctorId);
@@ -309,9 +305,7 @@ export const addDoctorNotification = async (req, res) => {
     // }
 
     doctor.notifications.push({patientId,name:user.name});
-    console.log(patientId);
     await doctor.save();
-     console.log("notif passed");
     res.status(200).json({ message: 'Notification added successfully', notifications: doctor.notifications });
   } catch (error) {
     console.error('Error adding notification:', error);
@@ -325,7 +319,6 @@ export const removeDoctorNotification = async (req, res) => {
   try {
     const doctor = await Doctor.findById(doctorId);
     const user = await User.findById(patientId);
-    console.log(doctor.name);
 
     if (!doctor || !user) {
       return res.status(404).json({ message: 'Doctor or patient not found' });
@@ -357,14 +350,12 @@ export const removePatientFromDoctor = async (req, res) => {
       userId: patientId, 
       doctorId: doctorId 
     });
-    console.log("hua delete 1")
     await Chat.findOneAndDelete({
       $and: [
         { users: { $elemMatch: { userId: patientId } } },
         { users: { $elemMatch: { userId: doctorId } } }
       ]
     });
- console.log("hua delete 2")
     const updatedDoctor = await Doctor.findByIdAndUpdate(
       doctorId,
       { 
@@ -372,7 +363,6 @@ export const removePatientFromDoctor = async (req, res) => {
       },
       { new: true } 
     )
- console.log("hua delete 3")
     if (!updatedDoctor) {
       return res.status(404).json({ message: 'Doctor not found' });
     }
@@ -436,10 +426,12 @@ export const getDoctorDetails = async (req, res) => {
   const { doctorId } = req.params;
 
   try {
-    const doctor = await Doctor.findById(doctorId)
-      .select('-password -refreshToken') // Exclude sensitive fields
-      .populate('patients.patientId', 'name') // Optional: populate patient names
-      .populate('notifications.patientId', 'name'); // Optional: populate notification names
+    // Public profile: exclude credentials and the doctor's private
+    // patient/notification lists. Reviews and slots stay so anyone can view
+    // them before logging in.
+    const doctor = await Doctor.findById(doctorId).select(
+      '-password -refreshToken -patients -notifications -email -phone_no'
+    );
 
     if (!doctor) {
       return res.status(404).json({ message: 'Doctor not found' });
@@ -512,7 +504,6 @@ export const createDoctorReview = async (req, res) => {
 };
 
 export const updateSlotStatusById = async (req, res) => {
-  console.log(req.body);
   const { doctorId, slotId, isBooked } = req.body;
 
   if (!doctorId || !slotId || typeof isBooked !== 'boolean') {

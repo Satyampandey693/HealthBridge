@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { io } from "socket.io-client";
 import { useAuth } from "../../store/auth";
+import { useNotifications } from "../../store/notifications.jsx";
 import { SOCKET_URL } from "../../config";
 import "./DoctorChat.css";
 
@@ -12,6 +13,7 @@ const ENDPOINTS = SOCKET_URL;
 export const DoctorChat = ({ activePatientId, activeChatId,activePatientName }) => {
   const doctorId = localStorage.getItem("userID");
   const { authorizationToken } = useAuth();
+  const { clearChat } = useNotifications();
   
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -39,9 +41,11 @@ export const DoctorChat = ({ activePatientId, activeChatId,activePatientName }) 
 
     const handleMessageReceived = (newMessageReceived) => {
       // Only add message to state if it belongs to the currently open chat
-      if (activePatientId === newMessageReceived.chat._id || 
+      if (activePatientId === newMessageReceived.chat._id ||
           activePatientId === newMessageReceived.sender._id) {
         setMessages((prev) => [...prev, newMessageReceived]);
+        // The doctor is reading this chat right now, so keep it cleared.
+        if (activeChatId) clearChat(activeChatId);
       } else {
         toast.info(`New message from another patient`);
       }
@@ -52,7 +56,7 @@ export const DoctorChat = ({ activePatientId, activeChatId,activePatientName }) 
     return () => {
       socket.current.off("message recieved", handleMessageReceived);
     };
-  }, [activePatientId]);
+  }, [activePatientId, activeChatId, clearChat]);
 
   // 3. Fetch Messages whenever the prop 'activePatientId' changes
   useEffect(() => {

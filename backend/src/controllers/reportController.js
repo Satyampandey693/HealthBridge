@@ -5,7 +5,6 @@ import { Doctor } from '../models/doctorModel.js';
 const mongoURI = getMongoURI();
 
 export const uploadReport = (req, res) => {
-  console.log("file is ",req.file);
   if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
   res.status(200).json({

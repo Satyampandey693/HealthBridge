@@ -13,7 +13,6 @@ export const getLabsByCategory = async (req, res) => {
   }
 };
 export const search = catchAsyncErrors(async (req, res, next) => {
-  console.log("req.body:", req.body);
   const { name, city } = req.body;
 
   const filters = {};

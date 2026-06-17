@@ -4,6 +4,7 @@ import axios from 'axios'
 import { Toaster } from 'react-hot-toast'
 import App from './App.jsx'
 import { AuthProvider } from './store/auth.jsx'
+import { NotificationProvider } from './store/notifications.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { API_BASE } from './config.js'
 import './styles/theme.css'
@@ -15,11 +16,13 @@ axios.defaults.withCredentials = true
 
 createRoot(document.getElementById('root')).render(
   <AuthProvider>
+  <NotificationProvider>
   <StrictMode>
     <ErrorBoundary>
       <App />
       <Toaster position="top-center" />
     </ErrorBoundary>
   </StrictMode>
+  </NotificationProvider>
   </AuthProvider>
 )

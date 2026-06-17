@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import NotificationDropdown from "../../pages/NotificationDropdown";
 import { useEffect, useState } from "react";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaEnvelope } from "react-icons/fa";
 import api from "../../api/client.js";
 import { useAuth } from "../../store/auth";
+import { useNotifications } from "../../store/notifications.jsx";
 
 const PLACEHOLDER = {
   doctor: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png",
@@ -14,11 +15,42 @@ const PLACEHOLDER = {
 
 export const Header = () => {
   const { role, userID: doctorId } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [avatar, setAvatar] = useState(null);
 
+  // Chat-message notifications (both roles), from the app-wide provider.
+  const { notifications: messageNotifs, unreadCount } = useNotifications();
+  const [showMessages, setShowMessages] = useState(false);
+
   const toggleDropdown = () => setShowDropdown((s) => !s);
+
+  // Opening the bell only previews messages — notifications are removed when
+  // the actual chat is opened, not just glanced at.
+  const toggleMessages = () => setShowMessages((s) => !s);
+
+  // Jump toward the relevant chat. We do NOT clear here — the count should
+  // only disappear once the actual conversation is opened (the patient's
+  // UserChat / the doctor selecting that patient), which clears it then.
+  const openChat = (notif) => {
+    setShowMessages(false);
+    if (role === "patient") {
+      navigate(`/doctors/list?id=${notif.sender?.userId}`);
+    } else if (role === "doctor") {
+      navigate("/patients");
+    }
+  };
+
+  // Collapse multiple messages from the same chat into one row with a count.
+  const groupedMessages = Object.values(
+    (messageNotifs || []).reduce((acc, n) => {
+      const key = String(n.chatId);
+      if (!acc[key]) acc[key] = { ...n, count: 0 };
+      acc[key].count += 1;
+      return acc;
+    }, {})
+  );
 
   const fetchNotifications = async () => {
     try {
@@ -116,6 +148,51 @@ export const Header = () => {
       </div>
 
       <div className="right-section">
+        {/* Chat-message notifications — for patients and doctors alike. */}
+        {(role === "patient" || role === "doctor") && (
+          <div className="notification-container">
+            <div className="bell-wrapper" onClick={toggleMessages}>
+              <FaEnvelope className="bell-icon" />
+              {unreadCount > 0 && (
+                <span className="notification-badge">{unreadCount}</span>
+              )}
+            </div>
+            {showMessages && (
+              <div className="notification-dropdown">
+                <div className="notification-dropdown__head">Messages</div>
+                {groupedMessages.length === 0 ? (
+                  <div className="notification-empty">
+                    <span role="img" aria-label="bell">🔔</span>
+                    <p>No new messages</p>
+                  </div>
+                ) : (
+                  groupedMessages.map((n) => (
+                    <div
+                      key={n.chatId}
+                      className="notification-item msg-notif is-unread"
+                      onClick={() => openChat(n)}
+                    >
+                      <div className="notification-item__avatar">
+                        {n.sender?.name?.charAt(0)?.toUpperCase() || "?"}
+                      </div>
+                      <div className="msg-notif__body">
+                        <span className="notification-item__name">
+                          {n.sender?.role === "doctor" ? "Dr. " : ""}
+                          {n.sender?.name || "Someone"}
+                        </span>
+                        <span className="msg-notif__preview">{n.content}</span>
+                      </div>
+                      {n.count > 1 && (
+                        <span className="msg-notif__count">{n.count}</span>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {role === "doctor" && (
           <div className="notification-container">
             <div className="bell-wrapper" onClick={toggleDropdown}>

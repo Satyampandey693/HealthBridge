@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './MyPatients.css';
 import { useAuth } from '../store/auth';
+import { useNotifications } from '../store/notifications.jsx';
 import { DoctorChat } from './chat/DoctorChat'; // Import the sibling component
 
 export const MyPatients = () => {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const { authorizationToken } = useAuth();
+  const { unreadForChat, clearChat } = useNotifications();
   const doctorId = localStorage.getItem('userID');
+
+  // Opening a patient's chat means their messages are seen — clear them.
+  const openPatient = (patient) => {
+    setSelectedPatient(patient);
+    if (patient.chatId) clearChat(patient.chatId);
+  };
 
   // Fetch the list of patients associated with this doctor
   const fetchPatients = async () => {
@@ -67,25 +75,33 @@ export const MyPatients = () => {
           <div className="sidebar">
             <h3>Patients</h3>
             <ul>
-              {patients.map((patient) => (
-                <li
-                  key={patient.patientId}
-                  className={selectedPatient?.patientId === patient.patientId ? 'active' : ''}
-                >
-                  <span onClick={() => setSelectedPatient(patient)}>
-                    {patient.name}
-                  </span>
-                  <button
-                    className="remove-btn"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent clicking the li
-                      handleRemovePatient(patient.patientId);
-                    }}
+              {patients.map((patient) => {
+                const unread = unreadForChat(patient.chatId);
+                return (
+                  <li
+                    key={patient.patientId}
+                    className={selectedPatient?.patientId === patient.patientId ? 'active' : ''}
                   >
-                    Remove
-                  </button>
-                </li>
-              ))}
+                    <span className="patient-name" onClick={() => openPatient(patient)}>
+                      {patient.name}
+                      {unread > 0 && (
+                        <span className="unread-count" title={`${unread} unread message${unread > 1 ? 's' : ''}`}>
+                          {unread}
+                        </span>
+                      )}
+                    </span>
+                    <button
+                      className="remove-btn"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent clicking the li
+                        handleRemovePatient(patient.patientId);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

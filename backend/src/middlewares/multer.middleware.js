@@ -45,7 +45,6 @@ const storage = new GridFsStorage({
           description,
         },
       };
-      console.log("File metadata prepared:", fileInfo);
       resolve(fileInfo);
     }),
 });

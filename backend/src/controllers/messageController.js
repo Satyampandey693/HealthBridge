@@ -3,6 +3,7 @@ import { Chat } from "../models/chatModel.js";
 import { User } from "../models/user.js";
 import { Doctor } from "../models/doctorModel.js";
 import { Message } from "../models/messageModel.js";
+import { Notification } from "../models/notificationModel.js";
 
 // Helper function to populate user info based on type
 const getUserInfo = async (userId, role) => {
@@ -38,10 +39,8 @@ export const allMessages = asyncHandler(async (req, res) => {
 //@access          Protected
 export const sendMessage = asyncHandler(async (req, res) => {
   const { content, chatId,role } = req.body;
-  console.log(req.body)
 
   if (!content || !chatId) {
-    console.log("Invalid data passed into request");
     return res.sendStatus(400);
   }
 
@@ -62,10 +61,33 @@ export const sendMessage = asyncHandler(async (req, res) => {
     message = await message.populate("chat");
 
     const senderInfo = await getUserInfo(message.sender.userId, message.sender.role);
-   
 
     await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
-    console.log("show me the chat 3")
+
+    // Notify the *other* chat participant. The chat is populated, so its
+    // users array (each { userId, role }) is available here. A notification
+    // failure must never fail the message send, so it's isolated.
+    try {
+      const recipient = message.chat?.users?.find(
+        (u) => String(u.userId) !== String(req.user._id)
+      );
+      if (recipient) {
+        await Notification.create({
+          recipient: { userId: recipient.userId, role: recipient.role },
+          sender: {
+            userId: req.user._id,
+            name: senderInfo?.name,
+            role: senderRole,
+          },
+          type: "message",
+          chatId,
+          content: content.slice(0, 100),
+        });
+      }
+    } catch (notifyErr) {
+      console.error("Failed to create message notification:", notifyErr.message);
+    }
+
     res.json({
       ...message.toObject(),
       sender: senderInfo,

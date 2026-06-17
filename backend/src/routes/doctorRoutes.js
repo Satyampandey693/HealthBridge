@@ -54,7 +54,9 @@ router.route('/:doctorId/remove-patient').put(isAuthenticatedUser,authorizeRoles
 router.route('/add').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),insertAny);
 router.route('/add/:doctorId').post(isAuthenticatedUser,authorizeRoles("doctor","admin"),addSlotToDoctor);
 router.route('/:doctorId/review').post(isAuthenticatedUser,authorizeRoles("patient"),createDoctorReview);
-router.route('/:doctorId').get(isAuthenticatedUser,authorizeRoles("patient","admin"),getDoctorDetails);
+// Public doctor profile (info, slots, reviews) — viewable without logging in.
+// Booking and reviewing still require auth via their own routes.
+router.route('/:doctorId').get(getDoctorDetails);
 router.route('/slot/update').put(isAuthenticatedUser,authorizeRoles("admin","doctor","patient"),updateSlotStatusById);
 router.route("/slots/:userID").get(isAuthenticatedUser,getAllSlots);
 export default router;

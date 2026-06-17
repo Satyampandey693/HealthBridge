@@ -7,7 +7,6 @@ export const getAllUsers=async(req,res)=>{
         if(!users||users.length===0){
             return res.status(404).json("No users found");
         }
-        console.log(users);
         return res.status(200).json(users);
     }
     catch(error){
@@ -43,7 +42,6 @@ export const getUserById=async(req,res)=>{
 export const getDoctorById=async(req,res)=>{
     try{
         const id=req.params.id;
-        console.log(id);
         const data=await Doctor.findOne({_id:id},{password:0});
 
         return res.status(200).json(data);

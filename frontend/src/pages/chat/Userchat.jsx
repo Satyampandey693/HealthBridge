@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactStars from "react-rating-stars-component";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./userChat.css";
 import { toast, ToastContainer } from "react-toastify";
 import { io } from "socket.io-client";
 import { useAuth } from "../../store/auth";
+import { useNotifications } from "../../store/notifications.jsx";
 import { SOCKET_URL } from "../../config";
 import api from "../../api/client.js";
 
@@ -139,7 +140,7 @@ const ReviewForm = ({ doctorId, onReviewed }) => {
   );
 };
 
-const SlotSelection = ({ slots, onBookSlot }) => {
+const SlotSelection = ({ slots, onBookSlot, isLoggedIn }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
 
   const availableSlots = slots.filter(slot => {
@@ -173,9 +174,16 @@ const SlotSelection = ({ slots, onBookSlot }) => {
           ))}
         </ul>
       )}
-      <button onClick={() => onBookSlot(selectedSlot)} disabled={!selectedSlot}>
-        Book Slot & Pay
-      </button>
+      {isLoggedIn ? (
+        <button onClick={() => onBookSlot(selectedSlot)} disabled={!selectedSlot}>
+          Book Slot & Pay
+        </button>
+      ) : (
+        <>
+          <p className="uc-login-note">Please log in as a patient to book a consultation.</p>
+          <button onClick={() => onBookSlot(null)}>Log in to Book</button>
+        </>
+      )}
     </div>
   );
 };
@@ -229,6 +237,7 @@ const Chat = ({ messages, onSend, doctorInfo }) => {
 
 export const UserChat = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const userId = localStorage.getItem("userID");
   const [paid, setPaid] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -236,7 +245,8 @@ export const UserChat = () => {
   const doctorIdRef = useRef(null);
   const [reviews, setReviews] = useState([]);
   const [slots, setSlots] = useState([]);
-  const { authorizationToken } = useAuth();
+  const { authorizationToken, isLoggedIn } = useAuth();
+  const { clearChat } = useNotifications();
   const chatIdRef = useRef(null);
   const user = { _id: userId };
 
@@ -251,6 +261,8 @@ export const UserChat = () => {
     socket.on("message recieved", (newMessage) => {
       if (chatIdRef.current === newMessage.chat._id) {
         setMessages((prev) => [...prev, newMessage]);
+        // Patient is reading this chat, so keep its notifications cleared.
+        clearChat(chatIdRef.current);
       }
     });
     socket.on("end chat", (chat_id) => {
@@ -267,21 +279,24 @@ export const UserChat = () => {
     const id = queryParams.get("id");
     const fetchDoctorInfo = async () => {
       try {
-        const { data } = await axios.get(`/api/doctor/${id}`, {
-          headers: { Authorization: authorizationToken },
-        });
+        // Public endpoint — works whether or not the visitor is logged in.
+        const { data } = await api.get(`/api/doctor/${id}`);
         setDoctorInfo(data);
         doctorIdRef.current = data._id;
         setReviews(data.reviews || []);
         setSlots(data.slots || []);
-        console.log
-        checkPaymentStatus(data._id);
+        // Payment status / chat are only relevant for logged-in patients.
+        if (isLoggedIn) {
+          checkPaymentStatus(data._id);
+        } else {
+          setPaid(false);
+        }
       } catch (error) {
         console.error("Failed to fetch doctor info:", error);
       }
     };
     if (id) fetchDoctorInfo();
-  }, [location.search, authorizationToken]);
+  }, [location.search, isLoggedIn]);
 
   // Re-pull the doctor (and its reviews) after the patient submits a review.
   const refreshReviews = async () => {
@@ -335,6 +350,8 @@ export const UserChat = () => {
       setMessages(data.messages || []);
       chatIdRef.current = data._id;
       socket.emit("join chat", chatIdRef.current);
+      // Opening the chat means any waiting messages are now seen.
+      clearChat(chatIdRef.current);
     } catch (err) {
       console.error("Error setting up chat after verification:", err);
     }
@@ -525,7 +542,11 @@ const loadRazorpayScript = () => {
       </div>
       <div className="uc-right-section">
         {!paid ? (
-          <SlotSelection slots={slots} onBookSlot={CheckoutHandler} />
+          <SlotSelection
+            slots={slots}
+            isLoggedIn={isLoggedIn}
+            onBookSlot={isLoggedIn ? CheckoutHandler : () => navigate("/login")}
+          />
         ) : (
           <Chat messages={messages} onSend={handleSendMessage} doctorInfo={doctorInfo || "Doctor"} />
         )}

@@ -14,10 +14,8 @@ const getUserByRole = async (id, role) => {
 //@access          Protected
 export const accessChat = asyncHandler(async (req, res) => {
   const { userId, role } = req.body;
-  console.log("role is ",role);
   if (!userId || !role) {
     return res.status(400).json({ message: "Missing userId or role" });
-    console.log("not present");
   }
 
   let isChat = await Chat.findOne({
@@ -46,7 +44,6 @@ export const accessChat = asyncHandler(async (req, res) => {
     ],
   };
 
-  console.log(chatData)
   try {
     const createdChat = await Chat.create(chatData);
     const populatedUsers = await Promise.all(
@@ -57,7 +54,6 @@ export const accessChat = asyncHandler(async (req, res) => {
     res.status(200).json(chat);
   } catch (error) {
     res.status(400);
-    console.log("hello");
     throw new Error(error.message);
   }
 });
@@ -66,7 +62,6 @@ export const accessChat = asyncHandler(async (req, res) => {
 //@route           GET /api/chat/
 //@access          Protected
 export const fetchChats = asyncHandler(async (req, res) => {
-  console.log("hi");
   try {
     let chats = await Chat.find({
       users: { $elemMatch: { userId: req.user._id } },
@@ -96,7 +91,6 @@ export const fetchChats = asyncHandler(async (req, res) => {
 //@route           DELETE /api/chat/:chatId
 //@access          Protected
 export const deleteChat = asyncHandler(async (req, res) => {
-  console.log("hifdfd")
   const { chatId } = req.params;
 
   const chat = await Chat.findById(chatId);

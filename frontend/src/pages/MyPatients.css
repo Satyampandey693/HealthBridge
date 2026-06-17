@@ -60,6 +60,29 @@
   font-weight: 600;
 }
 .sidebar ul li span { cursor: pointer; flex: 1; }
+.sidebar ul li .patient-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Higher specificity than `.sidebar ul li span` so the badge doesn't inherit
+   flex:1 and stretch into a bar. */
+.sidebar ul li .unread-count {
+  flex: none;
+  box-sizing: border-box;
+  background: var(--c-danger);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .remove-btn {
   background-color: transparent;

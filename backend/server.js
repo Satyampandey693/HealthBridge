@@ -28,6 +28,7 @@ import adminRoutes from "./src/routes/adminRoutes.js";
 import chatRoutes from "./src/routes/chatRoutes.js";
 import messageRoutes from "./src/routes/messageRoutes.js";
 import labRoutes from "./src/routes/labRoutes.js";
+import notificationRoutes from "./src/routes/notificationRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -91,6 +92,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/lab", labRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api", userAuthRoutes);
 
 app.use(errorMiddleware);
